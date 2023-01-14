@@ -1,30 +1,24 @@
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-
+import TerserPlugin from 'terser-webpack-plugin';
 
 const config = {
   entry: './src/index.js',
   output: {
     filename: '[name].bundle.js',
     path: resolve(dirname(fileURLToPath(import.meta.url)), 'dist'),
+    clean: true,
   },
-  devServer: {
-    open: true,
-    host: 'localhost',
-  },
-  mode: 'development',
-  optimization: {
-    usedExports: true,
-  },
+  mode: 'production',
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Jack and the mazestalk',
     }),
-
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
+  devServer: {
+    static: './dist',
+  },
   module: {
     rules: [
       {
@@ -36,10 +30,22 @@ const config = {
         type: 'asset',
       },
 
-      // Add your rules for custom modules here
-      // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
 };
 
-export default config;
+export default (argv) => {
+  if (argv.mode === 'development') {
+    config.mode = 'development';
+    config.devtool = 'source-map';
+  }
+
+  if (argv.mode === 'production') {
+    config.optimization = {
+      minimize: true,
+      minimizer: [new TerserPlugin()],
+    };
+  }
+
+  return config;
+};

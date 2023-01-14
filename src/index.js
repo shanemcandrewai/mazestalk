@@ -12,7 +12,7 @@ import {
   Mesh,
   Group,
 } from 'three';
-import { FlyControls } from 'three/src/extras/FlyControls.js';
+import { FlyControls } from './FlyControls.js';
 
 const getRandomInt = (min, max) => {
   // The maximum is exclusive and the minimum is inclusive
