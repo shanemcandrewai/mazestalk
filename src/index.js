@@ -1,5 +1,18 @@
-import { Scene, Color, Fog, PerspectiveCamera, WebGLRenderer, MeshBasicMaterial, QuadraticBezierCurve3, TubeGeometry, Vector3, Clock, Mesh, Group } from 'three';
-import { FlyControls } from 'three/src/extras/FlyControls';
+import {
+  Scene,
+  Color,
+  Fog,
+  PerspectiveCamera,
+  WebGLRenderer,
+  MeshBasicMaterial,
+  QuadraticBezierCurve3,
+  TubeGeometry,
+  Vector3,
+  Clock,
+  Mesh,
+  Group,
+} from 'three';
+import { FlyControls } from 'three/src/extras/FlyControls.js';
 
 const getRandomInt = (min, max) => {
   // The maximum is exclusive and the minimum is inclusive
@@ -8,9 +21,14 @@ const getRandomInt = (min, max) => {
 };
 
 const scene = new Scene();
-scene.background = new Color(0xFFFFFF);
+scene.background = new Color(0xffffff);
 scene.fog = new Fog(0x002000, 1, 7);
-const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000,
+);
 camera.position.x = 2;
 camera.position.y = 2;
 camera.position.z = 2;
@@ -28,7 +46,11 @@ controls.rollSpeed = Math.PI / 24;
 controls.autoForward = false;
 controls.dragToLook = false;
 
-const mg = new MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5 });
+const mg = new MeshBasicMaterial({
+  color: 0x00ff00,
+  transparent: true,
+  opacity: 0.5,
+});
 
 const curve90 = new QuadraticBezierCurve3(
   new Vector3(0, 0, 0),
@@ -58,7 +80,7 @@ for (let level = 0; level < 2; level += 1) {
 
 scene.add(gra);
 
-gra.rotateY(Math.PI * 0.10);
+gra.rotateY(Math.PI * 0.1);
 function animate() {
   requestAnimationFrame(animate);
 

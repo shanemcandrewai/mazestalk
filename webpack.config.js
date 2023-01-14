@@ -1,28 +1,27 @@
-// Generated using webpack-cli https://github.com/webpack/webpack-cli
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
 
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const WorkboxWebpackPlugin = require("workbox-webpack-plugin");
-
-const isProduction = process.env.NODE_ENV == "production";
+const isProduction = process.env.NODE_ENV === 'production';
 
 const config = {
-  entry: "./src/index.js",
+  entry: './src/index.js',
   output: {
-	filename: "[name].bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: '[name].bundle.js',
+    path: resolve(dirname(fileURLToPath(import.meta.url)), 'dist'),
   },
   devServer: {
     open: true,
-    host: "localhost",
+    host: 'localhost',
   },
-   mode: 'development',
- optimization: {
-   usedExports: true,
- },
+  mode: 'development',
+  optimization: {
+    usedExports: true,
+  },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Jack and the mazestalk",
+      title: 'Jack and the mazestalk',
     }),
 
     // Add your plugins here
@@ -32,11 +31,11 @@ const config = {
     rules: [
       {
         test: /\.(js|jsx)$/i,
-        loader: "babel-loader",
+        loader: 'babel-loader',
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-        type: "asset",
+        type: 'asset',
       },
 
       // Add your rules for custom modules here
@@ -45,13 +44,13 @@ const config = {
   },
 };
 
-module.exports = () => {
+// module.exports = () => {
+export default () => {
   if (isProduction) {
-    config.mode = "production";
-
+    config.mode = 'production';
     config.plugins.push(new WorkboxWebpackPlugin.GenerateSW());
   } else {
-    config.mode = "development";
+    config.mode = 'development';
   }
   return config;
 };
