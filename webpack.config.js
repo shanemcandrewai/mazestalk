@@ -1,9 +1,7 @@
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
 
-const isProduction = process.env.NODE_ENV === 'production';
 
 const config = {
   entry: './src/index.js',
@@ -44,13 +42,4 @@ const config = {
   },
 };
 
-// module.exports = () => {
-export default () => {
-  if (isProduction) {
-    config.mode = 'production';
-    config.plugins.push(new WorkboxWebpackPlugin.GenerateSW());
-  } else {
-    config.mode = 'development';
-  }
-  return config;
-};
+export default config;
