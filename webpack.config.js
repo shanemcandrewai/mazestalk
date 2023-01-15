@@ -39,6 +39,9 @@ const config = {
 
     ],
   },
+    experiments: {
+    topLevelAwait: true,
+  }
 };
 
 export default (env, argv) => {
