@@ -20,13 +20,18 @@ const config = {
   ],
   devServer: {
     static: resolve(__dirname, 'dist'),
+    open: true,
+    hot: false,
   },
   optimization: {
     splitChunks: {
       chunks: 'all',
     },
   },
-
+  performance: {
+    maxEntrypointSize: 1024000,
+    maxAssetSize: 1024000,
+  },
   experiments: {
     topLevelAwait: true,
   },
