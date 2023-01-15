@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: ["error", { "allow": ["__dirname"] }] */
 import { FlyControls } from './FlyControls.js';
 
 const {
@@ -33,6 +34,14 @@ const camera = new PerspectiveCamera(
 camera.position.x = 0;
 camera.position.y = 1;
 camera.position.z = 4;
+
+const newDiv = document.createElement('div');
+const newContent = document.createTextNode('');
+newDiv.appendChild(newContent);
+const id = document.createAttribute('id');
+id.value = 'testdiv';
+newDiv.setAttributeNode(id);
+document.body.appendChild(newDiv);
 
 const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -84,6 +93,14 @@ scene.add(gra);
 gra.rotateY(Math.PI * 0.1);
 function animate() {
   requestAnimationFrame(animate);
+  // newContent.nodeValue = gra.rotation.y;
+  newContent.nodeValue = ['camera.position.x', camera.position.x,
+    'camera.position.y', camera.position.y,
+    'camera.position.z', camera.position.z,
+    'camera.rotation.x', camera.rotation.x,
+    'camera.rotation.y', camera.rotation.y,
+    'camera.rotation.z', camera.rotation.z,
+  ];
 
   gra.rotation.y += 0.001;
   controls.update(clock.getDelta());
