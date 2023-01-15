@@ -40,10 +40,8 @@ const config = {
 
 export default (env, argv) => {
   if (argv.mode === 'development') {
-    // config.mode = 'development';
     config.devtool = 'source-map';
   } else if (argv.mode === 'production') {
-    // config.mode = 'production';
     config.optimization.minimize = true;
     config.optimization.minimizer = [new TerserPlugin()];
   }
