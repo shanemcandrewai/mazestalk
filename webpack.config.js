@@ -16,6 +16,7 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Jack and the mazestalk',
+	  scriptLoading: 'module',
     }),
   ],
   devServer: {

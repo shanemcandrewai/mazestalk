@@ -30,9 +30,9 @@ const camera = new PerspectiveCamera(
   0.1,
   1000,
 );
-camera.position.x = 2;
-camera.position.y = 2;
-camera.position.z = 2;
+camera.position.x = 0;
+camera.position.y = 1;
+camera.position.z = 4;
 
 const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -41,7 +41,7 @@ document.body.appendChild(renderer.domElement);
 const controls = new FlyControls(camera, renderer.domElement);
 const clock = new Clock();
 
-controls.movementSpeed = 1000;
+controls.movementSpeed = 1;
 controls.domElement = renderer.domElement;
 controls.rollSpeed = Math.PI / 24;
 controls.autoForward = false;
@@ -85,8 +85,7 @@ gra.rotateY(Math.PI * 0.1);
 function animate() {
   requestAnimationFrame(animate);
 
-  // gra.rotation.y += 0.01;
-  controls.movementSpeed = 1;
+  gra.rotation.y += 0.001;
   controls.update(clock.getDelta());
   renderer.render(scene, camera);
 }
