@@ -8,11 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch",
     "serve": "webpack serve --mode=production --node-env=production",
-    "serve:dev": "webpack serve --mode=development",
-    "serve:prod": "webpack serve --mode=production --node-env=production"
+    "serve:dev": "webpack serve --mode=development"
   },
   "repository": {
     "type": "git",
