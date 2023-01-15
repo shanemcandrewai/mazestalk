@@ -13,6 +13,11 @@ const config = {
     path: resolve(__dirname, 'dist'),
     clean: true,
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Jack and the mazestalk',
@@ -47,6 +52,9 @@ export default (env, argv) => {
     config.optimization = {
       minimize: true,
       minimizer: [new TerserPlugin()],
+      splitChunks: {
+        chunks: 'all',
+      },
     };
   }
 
