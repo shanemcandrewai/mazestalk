@@ -3,21 +3,23 @@ import { dirname, resolve } from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
+/* eslint no-underscore-dangle: ["error", { "allow": ["__dirname"] }] */
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 const config = {
-  entry: './src/index.js',
+  entry: resolve(__dirname, 'src/index.js'),
   output: {
     filename: '[name].bundle.js',
-    path: resolve(dirname(fileURLToPath(import.meta.url)), 'dist'),
+    path: resolve(__dirname, 'dist'),
     clean: true,
   },
-  mode: 'production',
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Jack and the mazestalk',
     }),
   ],
   devServer: {
-    static: './dist',
+    static: resolve(__dirname, 'dist'),
   },
   module: {
     rules: [
@@ -41,6 +43,7 @@ export default (env, argv) => {
   }
 
   if (argv.mode === 'production') {
+    config.mode = 'production';
     config.optimization = {
       minimize: true,
       minimizer: [new TerserPlugin()],
