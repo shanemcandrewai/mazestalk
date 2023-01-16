@@ -63,6 +63,7 @@ const curve90 = new QuadraticBezierCurve3(
 
 const g1 = new TubeGeometry(curve90, 64, 0.1, 8, false);
 const mxp = new Mesh(g1, mg);
+mxp.rotateY(Math.PI);
 const gra = new Group();
 
 const maze = [];
@@ -70,16 +71,20 @@ const maze = [];
 for (let level = 0; level < 3; level += 1) {
   for (let xpos = -level; xpos <= level; xpos += 1) {
     if (Math.abs(xpos) <= level) {
-      for (let direction = 0; direction < 2; direction += 1) {
+      for (let direction = -1; direction <= 1; direction += 2) {
+        const row = [level, xpos, direction];
         if (level === 0 || Math.floor(Math.random() * 2)) {
-          maze.push([level, direction, 1]);
+          row.push(1);
           const m = mxp.clone();
-          m.rotateY(Math.PI * direction);
+          if (direction === 1) {
+            m.rotateY(Math.PI);
+          }
           m.position.set(xpos, level * 2, 0);
           gra.add(m);
         } else {
-          maze.push([level, direction, 0]);
+          row.push(0);
         }
+        maze.push(row);
       }
     }
   }
@@ -99,7 +104,7 @@ function animate() {
     'camera.rotation.z', camera.rotation.z,
   ];
 
-  gra.rotation.y += 0.01;
+  // gra.rotation.y += 0.01;
   controls.update(clock.getDelta());
   renderer.render(scene, camera);
 }
