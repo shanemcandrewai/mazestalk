@@ -15,12 +15,6 @@ const {
   Group,
 } = await import('three');
 
-const getRandomInt = (min = 0, max = 2) => {
-  // The maximum is exclusive and the minimum is inclusive
-  const ceilmin = Math.ceil(min);
-  return Math.floor(Math.random() * (Math.floor(max) - ceilmin) + ceilmin);
-};
-
 const scene = new Scene();
 scene.background = new Color(0xffffff);
 scene.fog = new Fog(0x002000, 1, 10);
@@ -77,7 +71,7 @@ for (let level = 0; level < 3; level += 1) {
   for (let xpos = -level; xpos <= level; xpos += 1) {
     if (Math.abs(xpos) <= level) {
       for (let direction = 0; direction < 2; direction += 1) {
-        if (getRandomInt() || level === 0) {
+        if (level === 0 || Math.floor(Math.random() * 2)) {
           maze.push([level, direction, 1]);
           const m = mxp.clone();
           m.rotateY(Math.PI * direction);
