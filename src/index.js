@@ -1,4 +1,4 @@
-import { FlyControls } from './FlyControls.js';
+import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 
 const {
   Scene,
