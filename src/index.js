@@ -1,6 +1,6 @@
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 
-const {
+import {
   Scene,
   Color,
   Fog,
@@ -13,7 +13,7 @@ const {
   Clock,
   Mesh,
   Group,
-} = await import('three');
+} from 'three';
 
 const scene = new Scene();
 scene.background = new Color(0xffffff);
