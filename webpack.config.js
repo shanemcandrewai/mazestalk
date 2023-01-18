@@ -16,7 +16,7 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Jack and the mazestalk',
-	  scriptLoading: 'module',
+      scriptLoading: 'module',
     }),
   ],
   devServer: {
@@ -25,8 +25,8 @@ const config = {
     hot: false,
   },
   optimization: {
+    usedExports: true,
     splitChunks: {
-      // chunks: 'all',
     },
   },
   performance: {
