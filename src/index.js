@@ -25,8 +25,8 @@ const camera = new PerspectiveCamera(
   1000,
 );
 camera.position.x = 0;
-camera.position.y = 2;
-camera.position.z = 7;
+camera.position.y = 15;
+camera.position.z = 20;
 
 const newDiv = document.createElement('div');
 const newContent = document.createTextNode('');
@@ -68,23 +68,26 @@ const gra = new Group();
 
 const maze = [];
 
-for (let level = 0; level < 3; level += 1) {
+for (let level = 0; level < 15; level += 1) {
   for (let xpos = -level; xpos <= level; xpos += 1) {
     if (Math.abs(xpos) <= level) {
       for (let direction = -1; direction <= 1; direction += 2) {
-        const row = [level, xpos, direction];
-        if (level === 0 || Math.floor(Math.random() * 2)) {
-          row.push(1);
+        const row = {};
+        row.level = level;
+        row.xpos = xpos;
+        row.direction = direction;
+        row.xpos_up = xpos + direction;
+        if (level === 0 || (Math.floor(3 * (Math.random() / Math.abs(xpos)))
+          && maze.some((mazeRow) => (row.level === mazeRow.level + 1
+          && row.xpos === mazeRow.xpos_up)))) {
           const m = mxp.clone();
           if (direction === 1) {
             m.rotateY(Math.PI);
           }
           m.position.set(xpos, level * 2, 0);
           gra.add(m);
-        } else {
-          row.push(0);
+          maze.push(row);
         }
-        maze.push(row);
       }
     }
   }
