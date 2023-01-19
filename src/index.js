@@ -3,7 +3,7 @@ import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 import {
   Scene,
   Color,
-  Fog,
+  // Fog,
   PerspectiveCamera,
   WebGLRenderer,
   MeshBasicMaterial,
@@ -17,7 +17,7 @@ import {
 
 const scene = new Scene();
 scene.background = new Color(0xffffff);
-scene.fog = new Fog(0x002000, 1, 10);
+// scene.fog = new Fog(0x002000, 1, 10);
 const camera = new PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
@@ -77,7 +77,18 @@ for (let level = 0; level < 15; level += 1) {
         row.xpos = xpos;
         row.direction = direction;
         row.xpos_up = xpos + direction;
-        if (level === 0 || (Math.floor(3 * (Math.random() / Math.abs(xpos)))
+        // if (level === 0 || (Math.floor(3 * (Math.random() / Math.abs(xpos)))
+
+        const count = maze.reduce((accumulator, mazeRow) => {
+          if (row.level === mazeRow.level + 1
+          && row.xpos === mazeRow.xpos_up) {
+            return accumulator + 1;
+          }
+          return accumulator;
+        }, 0);
+        console.log('count', count);
+
+        if (level === 0 || (Math.floor(2.5 * (Math.random()))
           && maze.some((mazeRow) => (row.level === mazeRow.level + 1
           && row.xpos === mazeRow.xpos_up)))) {
           const m = mxp.clone();
