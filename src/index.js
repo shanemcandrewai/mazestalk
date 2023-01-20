@@ -77,27 +77,20 @@ for (let level = 0; level < 15; level += 1) {
         row.xpos = xpos;
         row.direction = direction;
         row.xpos_up = xpos + direction;
-        // if (level === 0 || (Math.floor(3 * (Math.random() / Math.abs(xpos)))
-
-        const count = maze.reduce((accumulator, mazeRow) => {
-          if (row.level === mazeRow.level + 1
-          && row.xpos === mazeRow.xpos_up) {
-            return accumulator + 1;
+        if (level === 0 || ((maze.some((mazeRow) => (row.level === mazeRow.level + 1
+          && row.xpos === mazeRow.xpos_up))))) {
+          if (!maze.some((mazeRow) => ((row.level === mazeRow.level
+            && row.xpos_up === mazeRow.xpos_up)))) {
+            if (Math.floor(5 * (Math.random() / (Math.abs(xpos) + 1)))) {
+              const m = mxp.clone();
+              if (direction === 1) {
+                m.rotateY(Math.PI);
+              }
+              m.position.set(xpos, level * 2, 0);
+              gra.add(m);
+              maze.push(row);
+            }
           }
-          return accumulator;
-        }, 0);
-        console.log('count', count);
-
-        if (level === 0 || (Math.floor(2.5 * (Math.random()))
-          && maze.some((mazeRow) => (row.level === mazeRow.level + 1
-          && row.xpos === mazeRow.xpos_up)))) {
-          const m = mxp.clone();
-          if (direction === 1) {
-            m.rotateY(Math.PI);
-          }
-          m.position.set(xpos, level * 2, 0);
-          gra.add(m);
-          maze.push(row);
         }
       }
     }
