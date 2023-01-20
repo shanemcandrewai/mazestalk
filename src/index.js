@@ -70,26 +70,24 @@ const maze = [];
 
 for (let level = 0; level < 15; level += 1) {
   for (let xpos = -level; xpos <= level; xpos += 1) {
-    if (Math.abs(xpos) <= level) {
-      for (let direction = -1; direction <= 1; direction += 2) {
-        const row = {};
-        row.level = level;
-        row.xpos = xpos;
-        row.direction = direction;
-        row.xpos_up = xpos + direction;
-        if (level === 0 || ((maze.some((mazeRow) => (row.level === mazeRow.level + 1
+    for (let ydir = -1; ydir <= 1; ydir += 2) {
+      const row = {};
+      row.level = level;
+      row.xpos = xpos;
+      row.ydir = ydir;
+      row.xpos_up = xpos + ydir;
+      if (level === 0 || ((maze.some((mazeRow) => (row.level === mazeRow.level + 1
           && row.xpos === mazeRow.xpos_up))))) {
-          if (!maze.some((mazeRow) => ((row.level === mazeRow.level
+        if (!maze.some((mazeRow) => ((row.level === mazeRow.level
             && row.xpos_up === mazeRow.xpos_up)))) {
-            if (Math.floor(5 * (Math.random() / (Math.abs(xpos) + 1)))) {
-              const m = mxp.clone();
-              if (direction === 1) {
-                m.rotateY(Math.PI);
-              }
-              m.position.set(xpos, level * 2, 0);
-              gra.add(m);
-              maze.push(row);
+          if (Math.floor(5 * (Math.random() / (Math.abs(xpos) + 1)))) {
+            const m = mxp.clone();
+            if (ydir === 1) {
+              m.rotateY(Math.PI);
             }
+            m.position.set(xpos, level * 2, 0);
+            gra.add(m);
+            maze.push(row);
           }
         }
       }
