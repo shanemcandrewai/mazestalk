@@ -13,6 +13,7 @@ import {
   Clock,
   Mesh,
   Group,
+  SphereGeometry,
 } from 'three';
 
 const scene = new Scene();
@@ -40,9 +41,9 @@ const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const controls = new FlyControls(camera, renderer.domElement);
 const clock = new Clock();
 
+const controls = new FlyControls(camera, renderer.domElement);
 controls.movementSpeed = 1;
 controls.domElement = renderer.domElement;
 controls.rollSpeed = Math.PI / 24;
@@ -61,10 +62,15 @@ const curve90 = new QuadraticBezierCurve3(
   new Vector3(1, 2, 0),
 );
 
-const g1 = new TubeGeometry(curve90, 64, 0.1, 8, false);
-const mxp = new Mesh(g1, mg);
-mxp.rotateY(Math.PI);
-const gra = new Group();
+const tubegeom = new TubeGeometry(curve90, 64, 0.1, 8, false);
+const mxp = new Mesh(tubegeom, mg);
+const mxn = mxp.clone();
+mxn.rotateY(Math.PI);
+const group = new Group();
+
+const SphereGeom = new SphereGeometry(0.2, 32, 16);
+const sphere = new Mesh(SphereGeom, mg);
+group.add(sphere);
 
 const maze = [];
 
@@ -77,16 +83,19 @@ for (let level = 0; level < 15; level += 1) {
       row.ydir = ydir;
       row.xpos_up = xpos + ydir;
       if (level === 0 || ((maze.some((mazeRow) => (row.level === mazeRow.level + 1
-          && row.xpos === mazeRow.xpos_up))))) {
+        && row.xpos === mazeRow.xpos_up))))) {
         if (!maze.some((mazeRow) => ((row.level === mazeRow.level
             && row.xpos_up === mazeRow.xpos_up)))) {
           if (Math.floor(5 * (Math.random() / (Math.abs(xpos) + 1)))) {
-            const m = mxp.clone();
+            let m;
             if (ydir === 1) {
-              m.rotateY(Math.PI);
+              m = mxp.clone();
+            } else {
+              m = mxn.clone();
             }
+            row.id = m.id;
             m.position.set(xpos, level * 2, 0);
-            gra.add(m);
+            group.add(m);
             maze.push(row);
           }
         }
@@ -95,12 +104,17 @@ for (let level = 0; level < 15; level += 1) {
   }
 }
 
-maze.forEach((it) => { console.log(it); });
-scene.add(gra);
+// maze.forEach((it) => { console.log(it); });
+scene.add(group);
+let ElapsedTime = 0;
+let showsphere;
+// let randomrow;
+let idremoved;
 
 function animate() {
   requestAnimationFrame(animate);
   newContent.nodeValue = [
+    'getElapsedTime', clock.getElapsedTime(),
     'camera.position.x', camera.position.x,
     'camera.position.y', camera.position.y,
     'camera.position.z', camera.position.z,
@@ -109,8 +123,25 @@ function animate() {
     'camera.rotation.z', camera.rotation.z,
   ];
 
-  // gra.rotation.y += 0.01;
-  controls.update(clock.getDelta());
+  // group.rotation.y += 0.01;
+  // controls.update(clock.getDelta());
+
+  if ((clock.getElapsedTime() - ElapsedTime) > 1) {
+    ElapsedTime = clock.getElapsedTime();
+    // const randomrow = Math.floor(Math.random() * maze.length);
+    if (showsphere) {
+      showsphere = false;
+      const randomrow = Math.floor(Math.random() * maze.length);
+      idremoved = group.getObjectById(maze[randomrow].id);
+      group.remove(idremoved);
+      console.log('xxx', showsphere);
+    } else {
+      showsphere = true;
+
+      group.add(idremoved);
+      console.log('xxx', showsphere);
+    }
+  }
   renderer.render(scene, camera);
 }
 
