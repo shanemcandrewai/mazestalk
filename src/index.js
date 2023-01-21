@@ -86,7 +86,7 @@ for (let level = 0; level < 15; level += 1) {
         && row.xpos === mazeRow.xpos_up))))) {
         if (!maze.some((mazeRow) => ((row.level === mazeRow.level
             && row.xpos_up === mazeRow.xpos_up)))) {
-          if (Math.floor(5 * (Math.random() / (Math.abs(xpos) + 1)))) {
+          if (level === 0 || Math.floor(5 * (Math.random() / (Math.abs(xpos) + 1)))) {
             let m;
             if (ydir === 1) {
               m = mxp.clone();
@@ -108,7 +108,7 @@ for (let level = 0; level < 15; level += 1) {
 scene.add(group);
 let ElapsedTime = 0;
 let showsphere;
-// let randomrow;
+let randomrow;
 let idremoved;
 
 function animate() {
@@ -126,22 +126,6 @@ function animate() {
   // group.rotation.y += 0.01;
   // controls.update(clock.getDelta());
 
-  if ((clock.getElapsedTime() - ElapsedTime) > 1) {
-    ElapsedTime = clock.getElapsedTime();
-    // const randomrow = Math.floor(Math.random() * maze.length);
-    if (showsphere) {
-      showsphere = false;
-      const randomrow = Math.floor(Math.random() * maze.length);
-      idremoved = group.getObjectById(maze[randomrow].id);
-      group.remove(idremoved);
-      console.log('xxx', showsphere);
-    } else {
-      showsphere = true;
-
-      group.add(idremoved);
-      console.log('xxx', showsphere);
-    }
-  }
   renderer.render(scene, camera);
 }
 
