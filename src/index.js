@@ -104,12 +104,17 @@ for (let level = 0; level < 15; level += 1) {
   }
 }
 
-// maze.forEach((it) => { console.log(it); });
+const pts = [];
+const steps = 100;
+for (let t = 0; t <= 1; t += 1 / steps) {
+  pts.push(curve90.getPoint(t));
+}
+
+// pts.forEach((v) => { console.log(v); });
+// console.log('xxx', pts[100].x);
 scene.add(group);
-let ElapsedTime = 0;
-let showsphere;
-let randomrow;
-let idremoved;
+
+let tstep = 0;
 
 function animate() {
   requestAnimationFrame(animate);
@@ -122,6 +127,16 @@ function animate() {
     'camera.rotation.y', camera.rotation.y,
     'camera.rotation.z', camera.rotation.z,
   ];
+
+  // console.log('xxx', curve90.getPoint(0.5));
+  // sphere.position.set(pts[tstep].x, pts[tstep].y, pts[tstep].z);
+  sphere.position.copy(pts[tstep]);
+  if (tstep < (steps - 1)) {
+    tstep += 1;
+    // console.log('xxx', pts[tstep]);
+  } else {
+    tstep = 0;
+  }
 
   // group.rotation.y += 0.01;
   // controls.update(clock.getDelta());
