@@ -50,7 +50,7 @@ controls.rollSpeed = Math.PI / 24;
 controls.autoForward = false;
 controls.dragToLook = false;
 
-const mg = new MeshBasicMaterial({
+const matGreen = new MeshBasicMaterial({
   color: 0x00ff00,
   transparent: true,
   opacity: 0.5,
@@ -62,41 +62,41 @@ const curve90 = new QuadraticBezierCurve3(
   new Vector3(1, 2, 0),
 );
 
-const tubegeom = new TubeGeometry(curve90, 64, 0.1, 8, false);
-const mxp = new Mesh(tubegeom, mg);
-const mxn = mxp.clone();
-mxn.rotateY(Math.PI);
+const tubeGeo = new TubeGeometry(curve90, 64, 0.1, 8, false);
+const tubeXPos = new Mesh(tubeGeo, matGreen);
+const tubeXNeg = tubeXPos.clone();
+tubeXNeg.rotateY(Math.PI);
 const group = new Group();
 
 const SphereGeom = new SphereGeometry(0.2, 32, 16);
-const sphere = new Mesh(SphereGeom, mg);
+const sphere = new Mesh(SphereGeom, matGreen);
 group.add(sphere);
 
 const maze = [];
 
-for (let level = 0; level < 15; level += 1) {
-  for (let xpos = -level; xpos <= level; xpos += 1) {
-    for (let ydir = -1; ydir <= 1; ydir += 2) {
-      const row = {};
-      row.level = level;
-      row.xpos = xpos;
-      row.ydir = ydir;
-      row.xpos_up = xpos + ydir;
-      if (level === 0 || ((maze.some((mazeRow) => (row.level === mazeRow.level + 1
-        && row.xpos === mazeRow.xpos_up))))) {
-        if (!maze.some((mazeRow) => ((row.level === mazeRow.level
-            && row.xpos_up === mazeRow.xpos_up)))) {
-          if (level === 0 || Math.floor(5 * (Math.random() / (Math.abs(xpos) + 1)))) {
-            let m;
-            if (ydir === 1) {
-              m = mxp.clone();
+for (let y = 0; y < 15; y += 1) {
+  for (let x = -y; x <= y; x += 1) {
+    for (let upperXDir = -1; upperXDir <= 1; upperXDir += 2) {
+      const tubeRow = {};
+      tubeRow.y = y;
+      tubeRow.x = x;
+      tubeRow.upperXDir = upperXDir;
+      tubeRow.upperX = x + upperXDir;
+      if (y === 0 || ((maze.some((mazeRow) => (tubeRow.y === mazeRow.y + 1
+        && tubeRow.x === mazeRow.upperX))))) {
+        if (!maze.some((mazeRow) => ((tubeRow.y === mazeRow.y
+            && tubeRow.upperX === mazeRow.upperX)))) {
+          if (y === 0 || Math.floor(5 * (Math.random() / (Math.abs(x) + 1)))) {
+            let newTube;
+            if (upperXDir === 1) {
+              newTube = tubeXPos.clone();
             } else {
-              m = mxn.clone();
+              newTube = tubeXNeg.clone();
             }
-            row.id = m.id;
-            m.position.set(xpos, level * 2, 0);
-            group.add(m);
-            maze.push(row);
+            tubeRow.id = newTube.id;
+            newTube.position.set(x, y * 2, 0);
+            group.add(newTube);
+            maze.push(tubeRow);
           }
         }
       }
@@ -104,18 +104,21 @@ for (let level = 0; level < 15; level += 1) {
   }
 }
 
-const pts = [];
-const steps = 100;
-for (let t = 0; t <= 1; t += 1 / steps) {
-  pts.push(curve90.getPoint(t));
+const tubePoints = [];
+const numSteps = 100;
+for (let tubeStep = 0; tubeStep <= 1; tubeStep += 1 / numSteps) {
+  tubePoints.push(curve90.getPoint(tubeStep));
 }
 
-// pts.forEach((v) => { console.log(v); });
-// console.log('xxx', pts[100].x);
+// tubePoints.forEach((v) => { console.log(v); });
+// console.log('xxx', tubePoints[100].x);
 scene.add(group);
 
-let tstep = 0;
-const currpos = new Vector3();
+let currentStep = 0;
+const spherePos = new Vector3();
+let branches = maze.filter((tubeRow) => tubeRow.y === sphere.position.y
+                                     && tubeRow.x === sphere.position.x);
+let chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
 
 function animate() {
   requestAnimationFrame(animate);
@@ -129,17 +132,29 @@ function animate() {
     'camera.rotation.z', camera.rotation.z,
   ];
 
-  // console.log('xxx', curve90.getPoint(0.5));
-  // sphere.position.set(pts[tstep].x, pts[tstep].y, pts[tstep].z);
+  // const numBranches = maze.reduce(
+  // (accumulator, tubeRow) => {
+  // if (tubeRow.y === sphere.position.y && tubeRow.x === sphere.position.x) {
+  // return accumulator + 1;
+  // }
+  // return accumulator;
+  // },
+  // 0,
+  // );
 
-  sphere.position.copy(pts[tstep]);
-  if (tstep < (steps - 1)) {
-    tstep += 1;
-    // console.log('xxx', pts[tstep]);
-  } else {
-    tstep = 0;
+  if (!(chosenBranch < 0)) {
+    sphere.position.copy(spherePos);
+    if (currentStep < (numSteps - 1)) {
+      currentStep += 1;
+      sphere.position.copy(spherePos).add(tubePoints[currentStep].x * maze[chosenBranch].upperXDir);
+    } else {
+      branches = maze.filter((tubeRow) => tubeRow.y === sphere.position.y
+                                     && tubeRow.x === sphere.position.x);
+      chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
+      spherePos.copy(sphere.position).add(tubePoints[currentStep]);
+      currentStep = 0;
+    }
   }
-
   // group.rotation.y += 0.01;
   // controls.update(clock.getDelta());
 
