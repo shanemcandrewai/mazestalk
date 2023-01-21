@@ -115,6 +115,7 @@ for (let t = 0; t <= 1; t += 1 / steps) {
 scene.add(group);
 
 let tstep = 0;
+const currpos = new Vector3();
 
 function animate() {
   requestAnimationFrame(animate);
@@ -130,6 +131,7 @@ function animate() {
 
   // console.log('xxx', curve90.getPoint(0.5));
   // sphere.position.set(pts[tstep].x, pts[tstep].y, pts[tstep].z);
+
   sphere.position.copy(pts[tstep]);
   if (tstep < (steps - 1)) {
     tstep += 1;
