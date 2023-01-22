@@ -110,8 +110,8 @@ scene.add(group);
 let branches = maze.filter((tubeRow) => tubeRow.yLevel === sphere.position.y
                                      && tubeRow.x === sphere.position.x);
 let chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
-branches.forEach((elem) => { console.log(elem); });
-console.log('chosenBranch', chosenBranch);
+// branches.forEach((elem) => { console.log(elem); });
+// console.log('chosenBranch', chosenBranch);
 
 const tubePoints = [];
 const numSteps = 100;
@@ -144,7 +144,7 @@ function animate() {
   // );
 
   if (!(chosenBranch < 0)) {
-    sphere.position.copy(sphereStartPos);
+    // sphere.position.copy(sphereStartPos);
 
     if (currentStep < (numSteps - 1)) {
       currentStep += 1;
@@ -153,16 +153,16 @@ function animate() {
 
       nextPoint.x = chosenBranch ? nextPoint.x : -nextPoint.x;
 
-      // sphere.position.copy(sphereStartPos).add(nextPoint);
-      sphere.position.add(nextPoint);
-      console.log(clock.getElapsedTime(), sphere.position);
-    } else {
-      sphereStartPos.copy(sphere.position);
+      sphere.position.copy(sphereStartPos).add(nextPoint);
+      // sphere.position.add(nextPoint);
       // console.log(clock.getElapsedTime(), sphere.position);
+    } else {
+      sphereStartPos.add(new Vector3(branches[chosenBranch].upperXDir, curve90.v2.y, 0));
+      // console.log(clock.getElapsedTime(), sphereStartPos);
 
-      branches = maze.filter((tubeRow) => tubeRow.yLevel * curve90.v2.y === sphere.position.y
-                                       && tubeRow.x === sphere.position.x);
-      // branches.forEach((elem) => { console.log(elem); });
+      branches = maze.filter((tubeRow) => tubeRow.yLevel * curve90.v2.y === sphereStartPos.y
+                                       && tubeRow.x === sphereStartPos.x);
+      branches.forEach((elem) => { console.log(elem); });
       // console.log('cgithosenBranch', chosenBranch);
 
       chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
