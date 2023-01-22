@@ -155,15 +155,15 @@ function animate() {
 
       // sphere.position.copy(sphereStartPos).add(nextPoint);
       sphere.position.add(nextPoint);
-      console.log(clock.getElapsedTime(), sphere.position.y);
+      console.log(clock.getElapsedTime(), sphere.position);
     } else {
       sphereStartPos.copy(sphere.position);
-      console.log(clock.getElapsedTime(), sphere.position.y);
+      // console.log(clock.getElapsedTime(), sphere.position);
 
-      branches = maze.filter((tubeRow) => tubeRow.yLevel === sphere.position.y
+      branches = maze.filter((tubeRow) => tubeRow.yLevel * curve90.v2.y === sphere.position.y
                                        && tubeRow.x === sphere.position.x);
       // branches.forEach((elem) => { console.log(elem); });
-      // console.log('chosenBranch', chosenBranch);
+      // console.log('cgithosenBranch', chosenBranch);
 
       chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
       // sphereStartPos.copy(sphere.position).add(tubePoints[currentStep]);
