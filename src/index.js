@@ -74,19 +74,19 @@ group.add(sphere);
 
 const maze = [];
 
-for (let y = 0; y < 15; y += 1) {
-  for (let x = -y; x <= y; x += 1) {
+for (let yLevel = 0; yLevel < 15; yLevel += 1) {
+  for (let x = -yLevel; x <= yLevel; x += 1) {
     for (let upperXDir = -1; upperXDir <= 1; upperXDir += 2) {
       const tubeRow = {};
-      tubeRow.y = y;
+      tubeRow.yLevel = yLevel;
       tubeRow.x = x;
       tubeRow.upperXDir = upperXDir;
       tubeRow.upperX = x + upperXDir;
-      if (y === 0 || ((maze.some((mazeRow) => (tubeRow.y === mazeRow.y + 1
+      if (yLevel === 0 || ((maze.some((mazeRow) => (tubeRow.yLevel === mazeRow.yLevel + 1
         && tubeRow.x === mazeRow.upperX))))) {
-        if (!maze.some((mazeRow) => ((tubeRow.y === mazeRow.y
+        if (!maze.some((mazeRow) => ((tubeRow.yLevel === mazeRow.yLevel
             && tubeRow.upperX === mazeRow.upperX)))) {
-          if (y === 0 || Math.floor(5 * (Math.random() / (Math.abs(x) + 1)))) {
+          if (yLevel === 0 || Math.floor(5 * (Math.random() / (Math.abs(x) + 1)))) {
             let newTube;
             if (upperXDir === 1) {
               newTube = tubeXPos.clone();
@@ -94,7 +94,7 @@ for (let y = 0; y < 15; y += 1) {
               newTube = tubeXNeg.clone();
             }
             tubeRow.id = newTube.id;
-            newTube.position.set(x, y * 2, 0);
+            newTube.position.set(x, yLevel * curve90.v2.y, 0);
             group.add(newTube);
             maze.push(tubeRow);
           }
@@ -104,21 +104,22 @@ for (let y = 0; y < 15; y += 1) {
   }
 }
 
+// console.log('xxx', tubePoints[100].x);
+scene.add(group);
+
+let branches = maze.filter((tubeRow) => tubeRow.yLevel === sphere.position.y
+                                     && tubeRow.x === sphere.position.x);
+let chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
+branches.forEach((elem) => { console.log(elem); });
+console.log('chosenBranch', chosenBranch);
+
 const tubePoints = [];
 const numSteps = 100;
 for (let tubeStep = 0; tubeStep <= 1; tubeStep += 1 / numSteps) {
   tubePoints.push(curve90.getPoint(tubeStep));
 }
-
-// tubePoints.forEach((v) => { console.log(v); });
-// console.log('xxx', tubePoints[100].x);
-scene.add(group);
-
 let currentStep = 0;
-const spherePos = new Vector3();
-let branches = maze.filter((tubeRow) => tubeRow.y === sphere.position.y
-                                     && tubeRow.x === sphere.position.x);
-let chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
+const sphereStartPos = new Vector3();
 
 function animate() {
   requestAnimationFrame(animate);
@@ -134,7 +135,7 @@ function animate() {
 
   // const numBranches = maze.reduce(
   // (accumulator, tubeRow) => {
-  // if (tubeRow.y === sphere.position.y && tubeRow.x === sphere.position.x) {
+  // if (tubeRow.yLevel === sphere.position.y && tubeRow.x === sphere.position.x) {
   // return accumulator + 1;
   // }
   // return accumulator;
@@ -143,15 +144,29 @@ function animate() {
   // );
 
   if (!(chosenBranch < 0)) {
-    sphere.position.copy(spherePos);
+    sphere.position.copy(sphereStartPos);
+
     if (currentStep < (numSteps - 1)) {
       currentStep += 1;
-      sphere.position.copy(spherePos).add(tubePoints[currentStep].x * maze[chosenBranch].upperXDir);
+
+      const nextPoint = tubePoints[currentStep].clone();
+
+      nextPoint.x = chosenBranch ? nextPoint.x : -nextPoint.x;
+
+      // sphere.position.copy(sphereStartPos).add(nextPoint);
+      sphere.position.add(nextPoint);
+      console.log(clock.getElapsedTime(), sphere.position.y);
     } else {
-      branches = maze.filter((tubeRow) => tubeRow.y === sphere.position.y
-                                     && tubeRow.x === sphere.position.x);
+      sphereStartPos.copy(sphere.position);
+      console.log(clock.getElapsedTime(), sphere.position.y);
+
+      branches = maze.filter((tubeRow) => tubeRow.yLevel === sphere.position.y
+                                       && tubeRow.x === sphere.position.x);
+      // branches.forEach((elem) => { console.log(elem); });
+      // console.log('chosenBranch', chosenBranch);
+
       chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
-      spherePos.copy(sphere.position).add(tubePoints[currentStep]);
+      // sphereStartPos.copy(sphere.position).add(tubePoints[currentStep]);
       currentStep = 0;
     }
   }
