@@ -74,19 +74,19 @@ group.add(sphere);
 
 const maze = [];
 
-for (let yLevel = 0; yLevel < 15; yLevel += 1) {
-  for (let x = -yLevel; x <= yLevel; x += 1) {
+for (let y = 0; y < 15; y += curve90.v2.y) {
+  for (let x = -y; x <= y; x += 1) {
     for (let upperXDir = -1; upperXDir <= 1; upperXDir += 2) {
       const tubeRow = {};
-      tubeRow.yLevel = yLevel;
+      tubeRow.y = y;
       tubeRow.x = x;
       tubeRow.upperXDir = upperXDir;
       tubeRow.upperX = x + upperXDir;
-      if (yLevel === 0 || ((maze.some((mazeRow) => (tubeRow.yLevel === mazeRow.yLevel + 1
+      if (y === 0 || ((maze.some((mazeRow) => (tubeRow.y === mazeRow.y + curve90.v2.y
         && tubeRow.x === mazeRow.upperX))))) {
-        if (!maze.some((mazeRow) => ((tubeRow.yLevel === mazeRow.yLevel
+        if (!maze.some((mazeRow) => ((tubeRow.y === mazeRow.y
             && tubeRow.upperX === mazeRow.upperX)))) {
-          if (yLevel === 0 || Math.floor(5 * (Math.random() / (Math.abs(x) + 1)))) {
+          if (y === 0 || Math.floor(5 * (Math.random() / (Math.abs(x) + 1)))) {
             let newTube;
             if (upperXDir === 1) {
               newTube = tubeXPos.clone();
@@ -94,7 +94,7 @@ for (let yLevel = 0; yLevel < 15; yLevel += 1) {
               newTube = tubeXNeg.clone();
             }
             tubeRow.id = newTube.id;
-            newTube.position.set(x, yLevel * curve90.v2.y, 0);
+            newTube.position.set(x, y, 0);
             group.add(newTube);
             maze.push(tubeRow);
           }
@@ -103,23 +103,19 @@ for (let yLevel = 0; yLevel < 15; yLevel += 1) {
     }
   }
 }
+    maze.forEach((elem) => { console.log(elem); });
 
-// console.log('xxx', tubePoints[100].x);
 scene.add(group);
-
-let branches = maze.filter((tubeRow) => tubeRow.yLevel === sphere.position.y
-                                     && tubeRow.x === sphere.position.x);
-let chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
-// branches.forEach((elem) => { console.log(elem); });
-// console.log('chosenBranch', chosenBranch);
 
 const tubePoints = [];
 const numSteps = 100;
 for (let tubeStep = 0; tubeStep <= 1; tubeStep += 1 / numSteps) {
   tubePoints.push(curve90.getPoint(tubeStep));
 }
-let currentStep = 0;
+let currentStep = 100;
 const sphereStartPos = new Vector3();
+let branches = [];
+let chosenBranch = 0;
 
 function animate() {
   requestAnimationFrame(animate);
@@ -133,40 +129,18 @@ function animate() {
     'camera.rotation.z', camera.rotation.z,
   ];
 
-  // const numBranches = maze.reduce(
-  // (accumulator, tubeRow) => {
-  // if (tubeRow.yLevel === sphere.position.y && tubeRow.x === sphere.position.x) {
-  // return accumulator + 1;
-  // }
-  // return accumulator;
-  // },
-  // 0,
-  // );
-
   if (!(chosenBranch < 0)) {
-    // sphere.position.copy(sphereStartPos);
-
+    // branches.forEach((elem) => { console.log(elem); });
     if (currentStep < (numSteps - 1)) {
       currentStep += 1;
-
       const nextPoint = tubePoints[currentStep].clone();
-
       nextPoint.x = chosenBranch ? nextPoint.x : -nextPoint.x;
-
       sphere.position.copy(sphereStartPos).add(nextPoint);
-      // sphere.position.add(nextPoint);
-      // console.log(clock.getElapsedTime(), sphere.position);
     } else {
-      sphereStartPos.add(new Vector3(branches[chosenBranch].upperXDir, curve90.v2.y, 0));
-      // console.log(clock.getElapsedTime(), sphereStartPos);
-
-      branches = maze.filter((tubeRow) => tubeRow.yLevel * curve90.v2.y === sphereStartPos.y
+      branches = maze.filter((tubeRow) => tubeRow.y * curve90.v2.y === sphereStartPos.y
                                        && tubeRow.x === sphereStartPos.x);
-      branches.forEach((elem) => { console.log(elem); });
-      // console.log('cgithosenBranch', chosenBranch);
-
       chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
-      // sphereStartPos.copy(sphere.position).add(tubePoints[currentStep]);
+      sphereStartPos.add(new Vector3(branches[chosenBranch].upperXDir, curve90.v2.y, 0));
       currentStep = 0;
     }
   }
