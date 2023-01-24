@@ -131,19 +131,11 @@ function animate() {
 
   // branches.forEach((elem) => { console.log(elem); });
 
-  if (!branches.length) {
+  if (!branches.length && currentStep === 0) {
     branches = maze.filter((tubeRow) => tubeRow.y === sphereStartPos.y
                                      && tubeRow.x === sphereStartPos.x);
-    // chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
-    if (branches.length) {
-      chosenBranch = Math.floor(Math.random() * branches.length);
-      currentStep = 0;
-    } else {
-      chosenBranch = -1;
-    }
-  }
-
-  if (chosenBranch > -1 && currentStep < numSteps) {
+    chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
+  } else if (chosenBranch > -1 && currentStep < numSteps) {
     const nextPoint = tubePoints[currentStep].clone();
     if (branches[chosenBranch].upperXDir < 0) {
       nextPoint.x = -nextPoint.x;
