@@ -10,7 +10,7 @@ import {
   QuadraticBezierCurve3,
   TubeGeometry,
   Vector3,
-  Clock,
+  // Clock,
   Mesh,
   Group,
   SphereGeometry,
@@ -41,7 +41,7 @@ const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const clock = new Clock();
+// const clock = new Clock();
 
 const controls = new FlyControls(camera, renderer.domElement);
 controls.movementSpeed = 1;
@@ -115,23 +115,15 @@ for (let tubeStep = 0; tubeStep <= 1; tubeStep += 1 / numSteps) {
 let currentStep = 0;
 const sphereStartPos = new Vector3();
 let branches = [];
-let chosenBranch = 0;
+let chosenBranch = -1;
 
 function animate() {
   requestAnimationFrame(animate);
-  newContent.nodeValue = [
-    'getElapsedTime', clock.getElapsedTime(),
-    'camera.position.x', camera.position.x,
-    'camera.position.y', camera.position.y,
-    'camera.position.z', camera.position.z,
-    'camera.rotation.x', camera.rotation.x,
-    'camera.rotation.y', camera.rotation.y,
-    'camera.rotation.z', camera.rotation.z,
-  ];
-
   // branches.forEach((elem) => { console.log(elem); });
-
   if (!branches.length && currentStep === 0) {
+    sphereStartPos.copy(sphere.position);
+
+    console.log('xxx', currentStep);
     branches = maze.filter((tubeRow) => tubeRow.y === sphereStartPos.y
                                      && tubeRow.x === sphereStartPos.x);
     chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
@@ -143,10 +135,11 @@ function animate() {
     sphere.position.copy(sphereStartPos).add(nextPoint);
     currentStep += 1;
   } else if (chosenBranch === -1 && currentStep >= 0) {
+    console.log('xx2', currentStep);
+
     const nextPoint = tubePoints[currentStep].clone();
     sphere.position.copy(sphereStartPos).add(nextPoint);
     currentStep -= 1;
-    console.log('xxx', currentStep);
   } else if (chosenBranch > -1) {
     console.log('yyy');
     sphereStartPos.add(new Vector3(branches[chosenBranch].upperXDir, curve90.v2.y, 0));
@@ -162,3 +155,13 @@ function animate() {
 }
 
 animate();
+
+// newContent.nodeValue = [
+// 'getElapsedTime', clock.getElapsedTime(),
+// 'camera.position.x', camera.position.x,
+// 'camera.position.y', camera.position.y,
+// 'camera.position.z', camera.position.z,
+// 'camera.rotation.x', camera.rotation.x,
+// 'camera.rotation.y', camera.rotation.y,
+// 'camera.rotation.z', camera.rotation.z,
+// ];
