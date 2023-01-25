@@ -114,39 +114,43 @@ for (let tubeStep = 0; tubeStep <= 1; tubeStep += 1 / numSteps) {
 }
 let currentStep = 0;
 const sphereStartPos = new Vector3();
-let branches = [];
-let chosenBranch = -1;
+let branches = maze.filter((tubeRow) => tubeRow.x === 0 && tubeRow.y === 0);
+let chosenBranch = Math.floor(Math.random() * 2) + 1;
 
 function animate() {
   requestAnimationFrame(animate);
   // branches.forEach((elem) => { console.log(elem); });
-  if (chosenBranch > -1 && currentStep < numSteps) {
+  if (chosenBranch && currentStep < numSteps) {
     if (!currentStep) {
       console.log('xxx up', currentStep);
     }
     const nextPoint = tubePoints[currentStep].clone();
-    if (branches[chosenBranch].upperXDir < 0) {
+    if (branches[chosenBranch - 1].upperXDir < 0) {
       nextPoint.x = -nextPoint.x;
     }
     sphere.position.copy(sphereStartPos).add(nextPoint);
     currentStep += 1;
   } else if (currentStep === numSteps) {
     console.log('xxx', numSteps);
-    sphereStartPos.add(new Vector3(branches[chosenBranch].upperXDir, curve90.v2.y, 0));
-    chosenBranch = -1;
+    sphereStartPos.add(new Vector3(branches[chosenBranch - 1].upperXDir, curve90.v2.y, 0));
+    chosenBranch = 0;
     currentStep = 0;
     console.log('xxx sphereStartPos', sphereStartPos);
-  } else if (chosenBranch === -1 && currentStep === 0) {
-    sphere.position.copy(sphereStartPos);
-    branches = maze.filter((tubeRow) => tubeRow.y === sphereStartPos.y
+  } else if (chosenBranch === 0) {
+    if (!currentStep) {
+      sphere.position.copy(sphereStartPos);
+      branches = maze.filter((tubeRow) => tubeRow.y === sphereStartPos.y
                                      && tubeRow.x === sphereStartPos.x);
-    chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) : -1;
-    console.log('xxx chosenBranch', chosenBranch);
-  } else if (chosenBranch === -1 && currentStep > 0) {
-    console.log('xxx down', currentStep);
-    const nextPoint = tubePoints[currentStep].clone();
-    sphere.position.copy(sphereStartPos).sub(nextPoint);
-    currentStep -= 1;
+      chosenBranch = branches.length ? Math.floor(Math.random() * branches.length + 1) : 0;
+      console.log('xxx chosenBranch', chosenBranch);
+    }
+    if (chosenBranch === 0) {
+      currentStep = numSteps - 1;
+      console.log('xxx down', currentStep);
+      const nextPoint = tubePoints[currentStep].clone();
+      sphere.position.copy(sphereStartPos).sub(nextPoint);
+      currentStep -= 1;
+    }
   } else {
     console.log('xxx else', currentStep);
   }
