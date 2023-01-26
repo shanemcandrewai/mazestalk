@@ -80,7 +80,6 @@ for (let y = 0; y < 15; y += curve90.v2.y) {
       const tubeRow = {};
       tubeRow.x = x;
       tubeRow.y = y;
-      tubeRow.upperXDir = upperXDir;
       tubeRow.upperX = x + upperXDir;
       if (y === 0 || ((maze.some((mazeRow) => (tubeRow.y === mazeRow.y + curve90.v2.y
         && tubeRow.x === mazeRow.upperX))))) {
@@ -116,7 +115,7 @@ let currentStep = 0;
 const sphereStartPos = new Vector3();
 let branches = maze.filter((tubeRow) => tubeRow.x === 0 && tubeRow.y === 0);
 let chosenBranch = Math.floor(Math.random() * 2) + 1;
-let { upperXDir } = branches[chosenBranch - 1];
+let { upperX } = branches[chosenBranch - 1];
 
 function animate() {
   requestAnimationFrame(animate);
@@ -124,7 +123,7 @@ function animate() {
   if (chosenBranch) {
     if (currentStep < numSteps) {
       const nextPoint = tubePoints[currentStep].clone();
-      if (upperXDir < 0) {
+      if (upperX < branches[chosenBranch - 1].upperX) {
         nextPoint.x = -nextPoint.x;
       }
       sphere.position.copy(sphereStartPos).add(nextPoint);
@@ -133,32 +132,33 @@ function animate() {
         console.log('xxx currentStep', currentStep);
         console.log('xxx chosenBranch', chosenBranch);
         console.log('xxx sphereStartPos', sphereStartPos);
-        console.log('xxx upperXDir', upperXDir);
+        console.log('xxx upperX', upperX);
         console.log('xxx sphere.position', sphere.position);
       }
       currentStep += 1;
-    } else {
-      branches = maze.filter((tubeRow) => tubeRow.x === sphereStartPos.x
-        + branches[chosenBranch - 1].upperXDir && tubeRow.y === sphereStartPos.y + curve90.v2.y);
+    } else { // currentStep === numSteps
+      branches = maze.filter((tubeRow) => tubeRow.x === branches[chosenBranch - 1].upperX
+     && tubeRow.y === sphereStartPos.y + curve90.v2.y);
       chosenBranch = branches.length ? Math.floor(Math.random() * branches.length + 1) : 0;
 
       if (chosenBranch) {
-        upperXDir = branches[chosenBranch - 1].upperXDir;
+        upperX = branches[chosenBranch - 1].upperX;
         // suspect next line is wrong
-        sphereStartPos.add(new Vector3(branches[chosenBranch - 1].upperXDir, curve90.v2.y, 0));
+        sphereStartPos.x = branches[chosenBranch - 1].upperX;
+        sphereStartPos.y += curve90.v2.y;
         sphere.position.copy(sphereStartPos);
         currentStep = 0;
       }
       console.log('xxx currentStep', currentStep);
       console.log('xxx chosenBranch', chosenBranch);
       console.log('xxx sphereStartPos', sphereStartPos);
-      console.log('xxx upperXDir', upperXDir);
+      console.log('xxx upperX', upperX);
       console.log('xxx sphere.position', sphere.position);
     }
   } else if (currentStep > 0) {
     currentStep -= 1;
     const nextPoint = tubePoints[currentStep].clone();
-    if (upperXDir < 0) {
+    if (upperX < branches[chosenBranch - 1].upperX) {
       nextPoint.x = -nextPoint.x;
     }
     sphere.position.copy(sphereStartPos).add(nextPoint);
