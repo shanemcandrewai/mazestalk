@@ -123,7 +123,7 @@ function animate() {
   if (chosenBranch) {
     if (currentStep < numSteps) {
       const nextPoint = tubePoints[currentStep].clone();
-      if (upperX < branches[chosenBranch - 1].upperX) {
+      if (branches[chosenBranch - 1].x > branches[chosenBranch - 1].upperX) {
         nextPoint.x = -nextPoint.x;
       }
       sphere.position.copy(sphereStartPos).add(nextPoint);
@@ -143,22 +143,21 @@ function animate() {
 
       if (chosenBranch) {
         upperX = branches[chosenBranch - 1].upperX;
-        // suspect next line is wrong
-        sphereStartPos.x = branches[chosenBranch - 1].upperX;
+        sphereStartPos.x = branches[chosenBranch - 1].x;
         sphereStartPos.y += curve90.v2.y;
         sphere.position.copy(sphereStartPos);
         currentStep = 0;
       }
-      console.log('xxx currentStep', currentStep);
-      console.log('xxx chosenBranch', chosenBranch);
-      console.log('xxx sphereStartPos', sphereStartPos);
-      console.log('xxx upperX', upperX);
-      console.log('xxx sphere.position', sphere.position);
     }
-  } else if (currentStep > 0) {
-    currentStep -= 1;
+  } else if (currentStep > 0) { //! chosenBranch
+    console.log('xxx currentStep', currentStep);
+    console.log('xxx chosenBranch', chosenBranch);
+    console.log('xxx sphereStartPos', sphereStartPos);
+    console.log('xxx upperX', upperX);
+    console.log('xxx sphere.position', sphere.position); currentStep -= 1;
     const nextPoint = tubePoints[currentStep].clone();
-    if (upperX < branches[chosenBranch - 1].upperX) {
+
+    if (upperX < sphere.position.x) {
       nextPoint.x = -nextPoint.x;
     }
     sphere.position.copy(sphereStartPos).add(nextPoint);
