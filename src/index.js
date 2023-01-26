@@ -78,8 +78,8 @@ for (let y = 0; y < 15; y += curve90.v2.y) {
   for (let x = -y; x <= y; x += 1) {
     for (let upperXDir = -1; upperXDir <= 1; upperXDir += 2) {
       const tubeRow = {};
-      tubeRow.y = y;
       tubeRow.x = x;
+      tubeRow.y = y;
       tubeRow.upperXDir = upperXDir;
       tubeRow.upperX = x + upperXDir;
       if (y === 0 || ((maze.some((mazeRow) => (tubeRow.y === mazeRow.y + curve90.v2.y
@@ -123,28 +123,37 @@ function animate() {
   // branches.forEach((elem) => { console.log(elem); });
   if (chosenBranch) {
     if (currentStep < numSteps) {
-      if (!currentStep) {
-        console.log('xxx up', currentStep);
-      }
       const nextPoint = tubePoints[currentStep].clone();
       if (upperXDir < 0) {
         nextPoint.x = -nextPoint.x;
       }
       sphere.position.copy(sphereStartPos).add(nextPoint);
+      if (!currentStep) {
+        console.log('xxx =============');
+        console.log('xxx currentStep', currentStep);
+        console.log('xxx chosenBranch', chosenBranch);
+        console.log('xxx sphereStartPos', sphereStartPos);
+        console.log('xxx upperXDir', upperXDir);
+        console.log('xxx sphere.position', sphere.position);
+      }
       currentStep += 1;
     } else {
-      console.log('xxx', numSteps);
       branches = maze.filter((tubeRow) => tubeRow.x === sphereStartPos.x
         + branches[chosenBranch - 1].upperXDir && tubeRow.y === sphereStartPos.y + curve90.v2.y);
       chosenBranch = branches.length ? Math.floor(Math.random() * branches.length + 1) : 0;
 
       if (chosenBranch) {
         upperXDir = branches[chosenBranch - 1].upperXDir;
+        // suspect next line is wrong
         sphereStartPos.add(new Vector3(branches[chosenBranch - 1].upperXDir, curve90.v2.y, 0));
         sphere.position.copy(sphereStartPos);
         currentStep = 0;
       }
+      console.log('xxx currentStep', currentStep);
+      console.log('xxx chosenBranch', chosenBranch);
       console.log('xxx sphereStartPos', sphereStartPos);
+      console.log('xxx upperXDir', upperXDir);
+      console.log('xxx sphere.position', sphere.position);
     }
   } else if (currentStep > 0) {
     currentStep -= 1;
