@@ -80,7 +80,6 @@ for (let y = 0; y < 15; y += curve90.v2.y) {
     }
   }
 }
-// maze.forEach((elem) => { console.log(elem); });
 scene.add(group);
 
 const tubePoints = [];
@@ -100,15 +99,6 @@ function animate() {
   // branches.forEach((elem) => { console.log(elem); });
   if (chosenBranch) {
     if (currentStep < numSteps && currentStep >= 0) {
-      if (!chosenBranch) {
-        console.log('xxx =============');
-        console.log('xxx sphereStartPos', sphereStartPos);
-        console.log('xxx sphere.position', sphere.position);
-        console.log('xxx chosenBranch', chosenBranch);
-        console.log('xxx currentStep', currentStep);
-        console.log('xxx NextX', NextX);
-        console.log('xxx NextY', NextY);
-      }
       const nextPoint = tubePoints[currentStep].clone();
       if (branches[chosenBranch - 1].x > NextX) {
         nextPoint.x = -nextPoint.x;
@@ -127,19 +117,28 @@ function animate() {
       sphereStartPos.y = NextY;
       sphere.position.copy(sphereStartPos);
       chosenBranch = 0;
-      branches = [];
       currentStep = 0;
     }
   } else { //! chosenBranch
     branches = maze.filter((tubeRow) => tubeRow.x === NextX && tubeRow.y === NextY);
-    chosenBranch = Math.floor(Math.random() * branches.length) + 1;
+    chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) + 1 : 0;
     if (chosenBranch) {
       NextX = branches[chosenBranch - 1].upperX;
       NextY += curve90.v2.y;
     } else {
+      maze.forEach((elem) => { console.log(elem); });
+
+      console.log('xxx =============');
+      console.log('xxx sphereStartPos', sphereStartPos);
+      console.log('xxx sphere.position', sphere.position);
+      console.log('xxx chosenBranch', chosenBranch);
+      console.log('xxx branches.length', branches.length);
+      console.log('xxx currentStep', currentStep);
+      console.log('xxx NextX', NextX);
+      console.log('xxx NextY', NextY);
       branches = maze.filter((tubeRow) => tubeRow.UpperX === NextX
                                        && tubeRow.y === NextY - curve90.v2.y);
-      chosenBranch = Math.floor(Math.random() * branches.length) + 1;
+      chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) + 1 : 0;
       if (chosenBranch) {
         NextX = branches[chosenBranch - 1].x;
         NextY -= curve90.v2.y;
