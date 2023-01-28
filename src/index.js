@@ -100,41 +100,40 @@ let NextY = curve90.v2.y;
 
 function animate() {
   requestAnimationFrame(animate);
-  // branches.forEach((elem) => { console.log(elem); });
+
+  // const delta = clock.getElapsedTime();
+  // if (delta > 15) {
+  // clock.start();
+  // console.log('xxx =============  function animate', delta);
+  // maze.forEach((elem) => { console.log(elem); });
+  // console.log('xxx sphereStartPos', sphereStartPos);
+  // console.log('xxx sphere.position', sphere.position);
+  // console.log('xxx chosenBranch', chosenBranch);
+  // console.log('xxx branches.length', branches.length);
+  // console.log('xxx branches[chosenBranch - 1]', branches[chosenBranch - 1]);
+  // console.log('xxx currentStep', currentStep);
+  // console.log('xxx NextX', NextX);
+  // console.log('xxx NextY', NextY);
+  // }
+
   if (chosenBranch) {
     if (currentStep < numSteps && currentStep >= 0) {
-      
-      const delta = clock.getElapsedTime();
-      if (delta > 15) {
-        clock.start();
-        maze.forEach((elem) => { console.log(elem); });
-
-        console.log('xxx =============', delta);
-        console.log('xxx sphereStartPos', sphereStartPos);
-        console.log('xxx sphere.position', sphere.position);
-        console.log('xxx chosenBranch', chosenBranch);
-        console.log('xxx branches.length', branches.length);
-        console.log('xxx branches[chosenBranch - 1]', branches[chosenBranch - 1]);
-        console.log('xxx currentStep', currentStep);
-        console.log('xxx NextX', NextX);
-        console.log('xxx NextY', NextY);
-      }         
-      
       const nextPoint = tubePoints[currentStep].clone();
-      if (branches[chosenBranch - 1].x > NextX) {
-        nextPoint.x = -nextPoint.x;
-      }
-   
-      
-      if (NextY < sphereStartPos.y) {
+      if (NextY > sphereStartPos.y) { // moving up
+        if (branches[chosenBranch - 1].x > NextX) {
+          nextPoint.x = -nextPoint.x;
+        }
+      } else { // moving down
+        // nextPoint.x = -nextPoint.y;
+        // nextPoint.y = -nextPoint.x;
+        if (NextX < sphereStartPos.x) {
+          nextPoint.x = -nextPoint.x;
+        }
         nextPoint.y = -nextPoint.y;
+        // }
       }
+      currentStep += 1;
       sphere.position.copy(sphereStartPos).add(nextPoint);
-      if (NextY > sphereStartPos.y) {
-        currentStep += 1;
-      } else {
-        currentStep -= 1;
-      }
     } else { // chosenBranch && currentStep === numSteps
       sphereStartPos.x = NextX;
       sphereStartPos.y = NextY;
@@ -154,10 +153,8 @@ function animate() {
       && tubeRow.y === NextY - curve90.v2.y);
       chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) + 1 : 0;
 
-
       NextX = branches[chosenBranch - 1].x;
       NextY = branches[chosenBranch - 1].y;
-
     }
   }
   // group.rotation.y += 0.01;
