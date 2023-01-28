@@ -124,13 +124,10 @@ function animate() {
           nextPoint.x = -nextPoint.x;
         }
       } else { // moving down
-        // nextPoint.x = -nextPoint.y;
-        // nextPoint.y = -nextPoint.x;
         if (NextX < sphereStartPos.x) {
           nextPoint.x = -nextPoint.x;
         }
         nextPoint.y = -nextPoint.y;
-        // }
       }
       currentStep += 1;
       sphere.position.copy(sphereStartPos).add(nextPoint);
