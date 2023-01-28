@@ -1,16 +1,20 @@
 import {
-  Scene,
+  Clock,
   Color,
-  PerspectiveCamera,
-  WebGLRenderer,
+  Group,
+  Mesh,
   MeshBasicMaterial,
+  PerspectiveCamera,
   QuadraticBezierCurve3,
+  Scene,
+  SphereGeometry,
   TubeGeometry,
   Vector3,
-  Mesh,
-  Group,
-  SphereGeometry,
+  WebGLRenderer,
 } from 'three';
+
+const clock = new Clock();
+clock.start();
 
 const scene = new Scene();
 scene.background = new Color(0xffffff);
@@ -99,10 +103,29 @@ function animate() {
   // branches.forEach((elem) => { console.log(elem); });
   if (chosenBranch) {
     if (currentStep < numSteps && currentStep >= 0) {
+      
+      const delta = clock.getElapsedTime();
+      if (delta > 15) {
+        clock.start();
+        maze.forEach((elem) => { console.log(elem); });
+
+        console.log('xxx =============', delta);
+        console.log('xxx sphereStartPos', sphereStartPos);
+        console.log('xxx sphere.position', sphere.position);
+        console.log('xxx chosenBranch', chosenBranch);
+        console.log('xxx branches.length', branches.length);
+        console.log('xxx branches[chosenBranch - 1]', branches[chosenBranch - 1]);
+        console.log('xxx currentStep', currentStep);
+        console.log('xxx NextX', NextX);
+        console.log('xxx NextY', NextY);
+      }         
+      
       const nextPoint = tubePoints[currentStep].clone();
       if (branches[chosenBranch - 1].x > NextX) {
         nextPoint.x = -nextPoint.x;
       }
+   
+      
       if (NextY < sphereStartPos.y) {
         nextPoint.y = -nextPoint.y;
       }
@@ -119,30 +142,22 @@ function animate() {
       chosenBranch = 0;
       currentStep = 0;
     }
-  } else { //! chosenBranch
+  } else { //! chosenBranch, choose upper branch
     branches = maze.filter((tubeRow) => tubeRow.x === NextX && tubeRow.y === NextY);
     chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) + 1 : 0;
+
     if (chosenBranch) {
       NextX = branches[chosenBranch - 1].upperX;
       NextY += curve90.v2.y;
-    } else {
-      maze.forEach((elem) => { console.log(elem); });
-
-      console.log('xxx =============');
-      console.log('xxx sphereStartPos', sphereStartPos);
-      console.log('xxx sphere.position', sphere.position);
-      console.log('xxx chosenBranch', chosenBranch);
-      console.log('xxx branches.length', branches.length);
-      console.log('xxx currentStep', currentStep);
-      console.log('xxx NextX', NextX);
-      console.log('xxx NextY', NextY);
-      branches = maze.filter((tubeRow) => tubeRow.UpperX === NextX
-                                       && tubeRow.y === NextY - curve90.v2.y);
+    } else { // no upper branches found, choose lower branch
+      branches = maze.filter((tubeRow) => tubeRow.upperX === NextX
+      && tubeRow.y === NextY - curve90.v2.y);
       chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) + 1 : 0;
-      if (chosenBranch) {
-        NextX = branches[chosenBranch - 1].x;
-        NextY -= curve90.v2.y;
-      }
+
+
+      NextX = branches[chosenBranch - 1].x;
+      NextY = branches[chosenBranch - 1].y;
+
     }
   }
   // group.rotation.y += 0.01;
