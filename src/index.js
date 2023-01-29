@@ -89,6 +89,7 @@ maze.forEach((tubeRow) => {
   group.add(newTube);
   const updatedTubeRow = { ...tubeRow };
   updatedTubeRow.id = newTube.id;
+
   updatdedMaze.push(updatedTubeRow);
 });
 
@@ -164,7 +165,8 @@ function animate() {
   } else { // chosenBranch not set, choose new branch
   // select upper branches, if any
     branches = maze.filter((tubeRow) => tubeRow.x === NextX && tubeRow.y === NextY);
-    // select lower branches
+    branches = branches.map((tubeRow) => ({ ...tubeRow, weight: 1 }));
+    // add lower branches
     branches.push(...maze.filter((tubeRow) => tubeRow.upperX === NextX
       && tubeRow.y === NextY - curve90.v2.y));
     chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) + 1 : 0;
