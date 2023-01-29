@@ -165,10 +165,19 @@ function animate() {
   } else { // chosenBranch not set, choose new branch
   // select upper branches, if any
     branches = maze.filter((tubeRow) => tubeRow.x === NextX && tubeRow.y === NextY);
-    branches = branches.map((tubeRow) => ({ ...tubeRow, weight: 1 }));
+    branches = branches.map((tubeRow) => ({ ...tubeRow, weight: 2 }));
     // add lower branches
-    branches.push(...maze.filter((tubeRow) => tubeRow.upperX === NextX
-      && tubeRow.y === NextY - curve90.v2.y));
+    let branchesLower = maze.filter((tubeRow) => tubeRow.upperX === NextX
+                                              && tubeRow.y === NextY - curve90.v2.y);
+    branchesLower = branchesLower.map((tubeRow) => ({ ...tubeRow, weight: 1 }));
+    branches.push(...branchesLower);
+    const totalWeight = branches.reduce(
+      (accumulator, tubeRow) => accumulator + tubeRow.weight,
+      0,
+    );
+    const cumulativeSum = ((sum) => (value) => (sum += value) / totalWeight)(0);
+    const run = branches.map(cumulativeSum);
+
     chosenBranch = branches.length ? Math.floor(Math.random() * branches.length) + 1 : 0;
     if (branches[chosenBranch - 1].x === sphereStartPos.x) {
       NextX = branches[chosenBranch - 1].upperX;
