@@ -55,7 +55,7 @@ const sphere = new Mesh(SphereGeom, matGreen);
 group.add(sphere);
 
 const maze = [];
-
+// Generate maze
 for (let y = 0; y < 15; y += curve90.v2.y) {
   for (let x = -y; x <= y; x += 1) {
     for (let upperXDir = -1; upperXDir <= 1; upperXDir += 2) {
@@ -68,15 +68,6 @@ for (let y = 0; y < 15; y += curve90.v2.y) {
         if (!maze.some((mazeRow) => ((tubeRow.y === mazeRow.y
             && tubeRow.upperX === mazeRow.upperX)))) {
           if (y === 0 || Math.floor(5 * (Math.random() / (Math.abs(x) + 1)))) {
-            let newTube;
-            if (upperXDir === 1) {
-              newTube = tubeXPos.clone();
-            } else {
-              newTube = tubeXNeg.clone();
-            }
-            tubeRow.id = newTube.id;
-            newTube.position.set(x, y, 0);
-            group.add(newTube);
             maze.push(tubeRow);
           }
         }
@@ -84,6 +75,20 @@ for (let y = 0; y < 15; y += curve90.v2.y) {
     }
   }
 }
+
+// Draw maze
+maze.forEach((tubeRow) => {
+  let newTube;
+  if (tubeRow.x < tubeRow.upperX) {
+    newTube = tubeXPos.clone();
+  } else {
+    newTube = tubeXNeg.clone();
+  }
+  newTube.position.set(tubeRow.x, tubeRow.y, 0);
+  group.add(newTube);
+  tubeRow.id = newTube.id;
+});
+
 scene.add(group);
 
 const tubePoints = [];
