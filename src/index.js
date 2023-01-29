@@ -87,20 +87,23 @@ maze.forEach((tubeRow) => {
   }
   newTube.position.set(tubeRow.x, tubeRow.y, 0);
   group.add(newTube);
-  const updatdedTubeRow = { ...tubeRow };
-  updatdedTubeRow.id = newTube.id;
-  updatdedMaze.push(updatdedTubeRow);
+  const updatedTubeRow = { ...tubeRow };
+  updatedTubeRow.id = newTube.id;
+  updatdedMaze.push(updatedTubeRow);
 });
 
 maze = Array.from(updatdedMaze);
 updatdedMaze = [];
 scene.add(group);
 
+// Calculate points along tube
 const tubePoints = [];
 const numSteps = 100;
 for (let tubeStep = 0; tubeStep <= 1; tubeStep += 1 / numSteps) {
   tubePoints.push(curve90.getPoint(tubeStep));
 }
+
+// Prepare state for animation
 let currentStep = 0;
 const sphereStartPos = new Vector3();
 let branches = maze.filter((tubeRow) => tubeRow.x === 0 && tubeRow.y === 0);
@@ -147,6 +150,10 @@ function animate() {
       sphere.position.copy(sphereStartPos);
       chosenBranch = 0;
       currentStep = 0;
+      const nodeIndex = maze.findIndex((tubeRow) => tubeRow.x === NextX && tubeRow.y === NextY);
+      if (nodeIndex > -1) {
+        maze[nodeIndex].visits += 1;
+      }
     }
   } else { //! chosenBranch, choose upper branch
     branches = maze.filter((tubeRow) => tubeRow.x === NextX && tubeRow.y === NextY);
