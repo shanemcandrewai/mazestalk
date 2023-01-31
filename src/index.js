@@ -67,7 +67,7 @@ for (let y = 0; y < 15; y += curve90.v2.y) {
   }
 }
 
-// Draw maze and update with tube ID
+// Draw maze and update with tube ID, visits
 maze = maze.map((tubeRow) => {
   let newTube;
   if (tubeRow.x < tubeRow.upperX) {
@@ -77,7 +77,7 @@ maze = maze.map((tubeRow) => {
   }
   newTube.position.set(tubeRow.x, tubeRow.y, 0);
   group.add(newTube);
-  return { ...tubeRow, id: newTube.id };
+  return { ...tubeRow, id: newTube.id, visits: 0 };
 });
 
 scene.add(group);
@@ -117,11 +117,7 @@ function animate() {
       sphere.position.copy(sphereStartPos).add(nextPoint);
       currentStep += 1;
     } else { // chosenIndex set && currentStep === numSteps
-      if ('visits' in maze[chosenIndex]) {
-        maze[chosenIndex].visits += 1;
-      } else {
-        maze[chosenIndex].visits = 1;
-      }
+      maze[chosenIndex].visits += 1;
       nextPoint.x = Math.round(nextPoint.x);
       nextPoint.y = Math.round(nextPoint.y);
       sphere.position.copy(sphereStartPos).add(nextPoint);
@@ -133,23 +129,23 @@ function animate() {
     let branches = maze.reduce((acc, tubeRow, ind) => {
       // select upper weighted branches, if any
       if (tubeRow.x === sphereStartPos.x && tubeRow.y === sphereStartPos.y) {
-        acc.push({ index: ind, weight: 2 });
+        acc.push({ index: ind, weight: 2 / (tubeRow.visits + 1) });
       }
       // add lower weighted branches
       if (tubeRow.upperX === sphereStartPos.x && tubeRow.y === sphereStartPos.y - curve90.v2.y) {
-        acc.push({ index: ind, weight: 1 });
+        acc.push({ index: ind, weight: 1 / (tubeRow.visits + 1) });
       }
       return acc;
     }, []);
-    // normalise weights
-    const totalWeight = branches.reduce((accumulator, tubeRow) => accumulator + tubeRow.weight, 0);
+    const totalWeight = branches.reduce((acc, tubeRow) => acc + tubeRow.weight, 0);
+    // add randMax - running total of weights
     let randMax = 0;
     branches = branches.map((elem) => {
-      randMax += elem.weight / totalWeight;
+      randMax += elem.weight;
       return { ...elem, randMax };
     });
     // choose weighted branch
-    const rand = Math.random();
+    const rand = Math.random() * totalWeight;
     chosenIndex = { ...branches.filter((elem) => elem.randMax > rand)[0] }.index;
   }
   // group.rotation.y += 0.01;
