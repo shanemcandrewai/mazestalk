@@ -68,8 +68,26 @@ for (let y = 0; y < 15; y += curve90.v2.y) {
 }
 
 // Draw maze and update with tube ID
-let updatdedMaze = [];
-maze.forEach((tubeRow) => {
+// let updatdedMaze = [];
+// maze.forEach((tubeRow) => {
+// let newTube;
+// if (tubeRow.x < tubeRow.upperX) {
+// newTube = tubeXPos.clone();
+// } else {
+// newTube = tubeXNeg.clone();
+// }
+// newTube.position.set(tubeRow.x, tubeRow.y, 0);
+// group.add(newTube);
+// const updatedTubeRow = { ...tubeRow };
+// updatedTubeRow.id = newTube.id;
+
+// updatdedMaze.push(updatedTubeRow);
+// });
+
+// maze = Array.from(updatdedMaze);
+// updatdedMaze = [];
+
+maze = maze.map((tubeRow) => {
   let newTube;
   if (tubeRow.x < tubeRow.upperX) {
     newTube = tubeXPos.clone();
@@ -78,14 +96,9 @@ maze.forEach((tubeRow) => {
   }
   newTube.position.set(tubeRow.x, tubeRow.y, 0);
   group.add(newTube);
-  const updatedTubeRow = { ...tubeRow };
-  updatedTubeRow.id = newTube.id;
-
-  updatdedMaze.push(updatedTubeRow);
+  return { ...tubeRow, id: newTube.id };
 });
 
-maze = Array.from(updatdedMaze);
-updatdedMaze = [];
 scene.add(group);
 
 // Calculate points along tube
