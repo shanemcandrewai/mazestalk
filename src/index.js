@@ -107,8 +107,13 @@ function animate() {
   if (chosenIndex > -1) { // target branch chosen
     if (currentStep < numSteps && currentStep >= 0) {
       nextPoint = tubePoints[currentStep].clone();
-      if (sphereStartPos.x > maze[chosenIndex].x) nextPoint.x = -nextPoint.x; // moving left
-      if (sphereStartPos.y > maze[chosenIndex].y) nextPoint.y = -nextPoint.y; // moving down
+      if (maze[chosenIndex].x < sphereStartPos.x) { // moving left
+        if (maze[chosenIndex].y > sphereStartPos.y) { // moving left up
+          nextPoint.x = -nextPoint.x;
+        }
+      } else if (maze[chosenIndex].y < sphereStartPos.y) { // moving right down
+        nextPoint.y = -nextPoint.y;
+      }
       sphere.position.copy(sphereStartPos).add(nextPoint);
       currentStep += 1;
     } else { // chosenIndex set && currentStep === numSteps
