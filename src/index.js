@@ -137,13 +137,21 @@ function animate() {
       }
       return acc;
     }, []);
+
     const totalWeight = branches.reduce((acc, tubeRow) => acc + tubeRow.weight, 0);
+
     // add randMax - running total of weights
-    let randMax = 0;
-    branches = branches.map((elem) => {
-      randMax += elem.weight;
-      return { ...elem, randMax };
-    });
+    branches = branches.reduce(
+      (acc, tubeRow, ind) => {
+        acc.push({
+          ...tubeRow,
+          randMax: (ind && (acc[ind - 1].randMax + tubeRow.weight)) || tubeRow.weight,
+        });
+        return acc;
+      },
+      [],
+    );
+
     // choose weighted branch
     const rand = Math.random() * totalWeight;
     chosenIndex = { ...branches.filter((elem) => elem.randMax > rand)[0] }.index;
