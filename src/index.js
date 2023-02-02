@@ -73,18 +73,24 @@ group.add(sphere);
 
 // Generate maze V2
 
+const levels = Array.from({ length: 3 + 1 }, (_, i) => 1 + i);
+
 let maze = [{ x: 0, y: 0, upperX: -1 }, { x: 0, y: 0, upperX: 1 }];
-maze = maze.reduce((a1, e1, i1) => {
+
+le
+maze = maze.reduce((a1, e1) => {
   a1.push(e1);
-  const branches = maze.reduce((a2, e2) => {
+  const branches = maze.reduce((a2, e2, i2) => {
     if (e2.upperX === e1.x && e2.y === e1.y - curve90.v2.y) {
-      return a2.lower + 1;
+      a2.lower.push(i2);
     }
     if (e2.x === e1.upperX && e2.y === e1.y + curve90.v2.y) {
-      return a2.upper + 1;
+      a2.upper.push(i2);
     }
     return a2;
-  }, { index: i1, lower: 0, upper: 0 });
+  }, { lower: [], upper: [] });
+  if (branches.upper.length < 2) {
+  }
   return a1;
 }, []);
 
