@@ -50,49 +50,48 @@ const sphere = new Mesh(SphereGeom, matGreen);
 group.add(sphere);
 
 // Generate maze
-// let maze = [];
-// for (let y = 0; y < 15; y += curve90.v2.y) {
-// for (let x = -y; x <= y; x += 1) {
-// for (let upperXDir = -1; upperXDir <= 1; upperXDir += 2) {
-// const tubeRow = {};
-// tubeRow.x = x;
-// tubeRow.y = y;
-// tubeRow.upperX = x + upperXDir;
-// if (y === 0 || ((maze.some((mazeRow) => (tubeRow.y === mazeRow.y + curve90.v2.y
-// && tubeRow.x === mazeRow.upperX))))) {
-// if (!maze.some((mazeRow) => ((tubeRow.y === mazeRow.y
-// && tubeRow.upperX === mazeRow.upperX)))) {
-// if (y === 0 || Math.floor(5 * (Math.random() / (Math.abs(x) + 1)))) {
-// maze.push(tubeRow);
-// }
-// }
-// }
-// }
-// }
-// }
+let maze = [];
+for (let y = 0; y < 15; y += curve90.v2.y) {
+  for (let x = -y; x <= y; x += 1) {
+    for (let upperXDir = -1; upperXDir <= 1; upperXDir += 2) {
+      const tubeRow = {};
+      tubeRow.x = x;
+      tubeRow.y = y;
+      tubeRow.upperX = x + upperXDir;
+      if (y === 0 || ((maze.some((mazeRow) => (tubeRow.y === mazeRow.y + curve90.v2.y
+&& tubeRow.x === mazeRow.upperX))))) {
+        if (!maze.some((mazeRow) => ((tubeRow.y === mazeRow.y
+&& tubeRow.upperX === mazeRow.upperX)))) {
+          if (y === 0 || Math.floor(5 * (Math.random() / (Math.abs(x) + 1)))) {
+            maze.push(tubeRow);
+          }
+        }
+      }
+    }
+  }
+}
 
 // Generate maze V2
 
-const levels = Array.from({ length: 3 + 1 }, (_, i) => 1 + i);
+// const levels = Array.from({ length: 3 + 1 }, (_, i) => 1 + i);
 
-let maze = [{ x: 0, y: 0, upperX: -1 }, { x: 0, y: 0, upperX: 1 }];
+// let maze = [{ x: 0, y: 0, upperX: -1 }, { x: 0, y: 0, upperX: 1 }];
 
-le
-maze = maze.reduce((a1, e1) => {
-  a1.push(e1);
-  const branches = maze.reduce((a2, e2, i2) => {
-    if (e2.upperX === e1.x && e2.y === e1.y - curve90.v2.y) {
-      a2.lower.push(i2);
-    }
-    if (e2.x === e1.upperX && e2.y === e1.y + curve90.v2.y) {
-      a2.upper.push(i2);
-    }
-    return a2;
-  }, { lower: [], upper: [] });
-  if (branches.upper.length < 2) {
-  }
-  return a1;
-}, []);
+// maze = maze.reduce((a1, e1) => {
+// a1.push(e1);
+// const branches = maze.reduce((a2, e2, i2) => {
+// if (e2.upperX === e1.x && e2.y === e1.y - curve90.v2.y) {
+// a2.lower.push(i2);
+// }
+// if (e2.x === e1.upperX && e2.y === e1.y + curve90.v2.y) {
+// a2.upper.push(i2);
+// }
+// return a2;
+// }, { lower: [], upper: [] });
+// if (branches.upper.length < 2) {
+// }
+// return a1;
+// }, []);
 
 // Draw maze and update with tube ID, visits
 maze = maze.map((tubeRow) => {
