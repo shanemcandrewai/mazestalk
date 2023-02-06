@@ -1,16 +1,34 @@
 // Generate maze V2
 
-const nodesArr = [
+const nodes = [
   { startPos: { x: 0, y: 0, z: 0 } },
   { startPos: { x: -1, y: 2, z: 0 } },
   { startPos: { x: -1, y: 2, z: 0 } },
   { startPos: { x: 1, y: 2, z: 0 } }];
 
-const linksArr = [
+const edges = [
   { fromNode: nodesArr[0], toNode: nodesArr[1] },
   { fromNode: nodesArr[0], toNode: nodesArr[2] }];
+  
+const getPointsAbove((startPos) =>{
+  return [];
+}
 
-const nodes = new Map(nodesArr.map((e) => [JSON.stringify(e), e]));
-const links = new Map(linksArr.map((e) => [JSON.stringify(e), e]));
+const getPreviousEdges((startPos) =>{
+  return [];
+}
 
-Array.from(nodes).filter((e) => e[1].startPos.x === 0)
+const getNextEdges((startPos) =>{
+  return [];
+}
+
+const getGrowthChance((startPos) =>{
+  const PointsAbove = 
+  return 1;
+}
+
+while(nodes.length < 10){
+  nodes.reduce((a, e, i) => {
+    const pointsAbove = getPointsAbove(e);
+  }, {nodes, edges);
+}
