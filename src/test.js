@@ -7,28 +7,29 @@ const nodes = [
   { startPos: { x: 1, y: 2, z: 0 } }];
 
 const edges = [
-  { fromNode: nodesArr[0], toNode: nodesArr[1] },
-  { fromNode: nodesArr[0], toNode: nodesArr[2] }];
-  
-const getPointsAbove((startPos) =>{
-  return [];
-}
+  { fromNode: nodes[0], toNode: nodes[1] },
+  { fromNode: nodes[0], toNode: nodes[2] }];
 
-const getPreviousEdges((startPos) =>{
-  return [];
-}
+const getPointsAbove = ((startPos) => []);
 
-const getNextEdges((startPos) =>{
-  return [];
-}
+const getPreviousEdges = ((startPos) => []);
 
-const getGrowthChance((startPos) =>{
-  const PointsAbove = 
-  return 1;
-}
+const getNextEdges = ((startPos) => []);
 
-while(nodes.length < 10){
+const getGrowthChance = ((startPos) => {
+  if (NextEdges(startPos) > 1) return 0;
+  const PreviousEdges = getPreviousEdges(startPos);
+}
+);
+
+const addNextPoint = ((NextPos) => true);
+const addNextEdge = ((StartPos, NextPos) => true);
+
+while (nodes.length < 10) {
   nodes.reduce((a, e, i) => {
-    const pointsAbove = getPointsAbove(e);
-  }, {nodes, edges);
+    if (Math.random() > getGrowthChance(e)) {
+      addNextPoint(e);
+    }
+    return a;
+  }, { nodes, edges });
 }
