@@ -24,32 +24,38 @@ class Maze {
     ];
   }
 
-  // getaddNode(startNode, endNode) {
-  // const startInd = this.#nodes.findIndex((node) => node
-  // return this.#edges.reduce((acc, edge) => {
-  // if (edge.fromNode.x === startNode.x
-  // && edge.fromNode.y === startNode.y
-  // && edge.fromNode.z === startNode.z) { acc.push(edge.toNode); }
-  // return acc;
-  // }, []);
-  // }
+  // getNextUnoccupied = (fromNode) => {
+  // const nextPoints = [];
+  // nextPoints.push(new Node(fromNode.x - 1, fromNode.y + 2));
+  // nextPoints.push(new Node(fromNode.x + 1, fromNode.y + 2));
+  // nextPoint.filter((point) =>
+  // };
 
-  getNextNodes(startNode) {
-    return this.#edges.reduce((acc, edge) => {
-      if (edge.fromNode.isSameLocation(startNode)) acc.push(edge.toNode);
-      return acc;
-    }, []);
-  }
+  addNodeEdge = (fromNode, toNode) => {
+    if (!this.#nodes.some((node) => fromNode.isSameLocation(node))) return -1;
+    if (this.#edges.some((edge) => fromNode.isSameLocation(edge.fromNode)
+                                && toNode.isSameLocation(edge.toNode))) return -2;
+    let endInd = this.#nodes.findIndex((node) => toNode.isSameLocation(node));
+    if (endInd === -1) endInd = this.#nodes.push(toNode) - 1;
+    this.#edges.push(new Edge(fromNode, toNode));
+    return endInd;
+  };
 
-  getPreviousNodes(endNode) {
-    return this.#edges.reduce((acc, edge) => {
-      if (edge.toNode.isSameLocation(endNode)) acc.push(edge.fromNode);
-      return acc;
-    }, []);
-  }
+  getNextNodes = (fromNode) => this.#edges.reduce((acc, edge) => {
+    if (edge.fromNode.isSameLocation(fromNode)) acc.push(edge.toNode);
+    return acc;
+  }, []);
+
+  getPreviousNodes = (toNode) => this.#edges.reduce((acc, edge) => {
+    if (edge.toNode.isSameLocation(toNode)) acc.push(edge.fromNode);
+    return acc;
+  }, []);
 }
 
 const maze = new Maze();
 
 log.info('maze.getNextNodes(new Node())', maze.getNextNodes(new Node()));
 log.info('maze.getPreviousNodes(new Node(-1, 2))', maze.getPreviousNodes(new Node(-1, 2)));
+log.info('toNode', maze.addNodeEdge(new Node(-1, 2), new Node(-2, 4)));
+log.info('maze.getNextNodes(new Node(-1, 2))', maze.getNextNodes(new Node(-1, 2)));
+log.info('maze.getNextNodes(new Node(1, 2))', maze.getNextNodes(new Node(1, 2)));
