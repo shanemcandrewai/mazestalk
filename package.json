@@ -35,6 +35,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "loglevel": "^1.8.1",
     "three": "^0.148.0"
   }
 }

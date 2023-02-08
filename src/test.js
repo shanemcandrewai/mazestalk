@@ -1,7 +1,10 @@
 // Generate maze V2
 
+import log from 'loglevel';
 import Node from './Node.js';
 import Edge from './Edge.js';
+
+log.setLevel('info', true);
 
 class Maze {
   #nodes;
@@ -21,31 +24,26 @@ class Maze {
     ];
   }
 
-  getaddNode(startNode, endNode) {
-    const startInd = this.#nodes.findIndex((node) => node
-    return this.#edges.reduce((acc, edge) => {
-      if (edge.fromNode.x === startNode.x
-       && edge.fromNode.y === startNode.y
-       && edge.fromNode.z === startNode.z) { acc.push(edge.toNode); }
-      return acc;
-    }, []);
-  }
-
+  // getaddNode(startNode, endNode) {
+  // const startInd = this.#nodes.findIndex((node) => node
+  // return this.#edges.reduce((acc, edge) => {
+  // if (edge.fromNode.x === startNode.x
+  // && edge.fromNode.y === startNode.y
+  // && edge.fromNode.z === startNode.z) { acc.push(edge.toNode); }
+  // return acc;
+  // }, []);
+  // }
 
   getNextNodes(startNode) {
     return this.#edges.reduce((acc, edge) => {
-      if (edge.fromNode.x === startNode.x
-       && edge.fromNode.y === startNode.y
-       && edge.fromNode.z === startNode.z) { acc.push(edge.toNode); }
+      if (edge.fromNode.isSameLocation(startNode)) acc.push(edge.toNode);
       return acc;
     }, []);
   }
 
   getPreviousNodes(endNode) {
     return this.#edges.reduce((acc, edge) => {
-      if (edge.toNode.x === endNode.x
-       && edge.toNode.y === endNode.y
-       && edge.toNode.z === endNode.z) { acc.push(edge.fromNode); }
+      if (edge.toNode.isSameLocation(endNode)) acc.push(edge.fromNode);
       return acc;
     }, []);
   }
@@ -53,5 +51,5 @@ class Maze {
 
 const maze = new Maze();
 
-console.log(maze.getNextNodes(new Node()));
-console.log(maze.getPreviousNodes(new Node(-1, 2)));
+log.info('maze.getNextNodes(new Node())', maze.getNextNodes(new Node()));
+log.info('maze.getPreviousNodes(new Node(-1, 2))', maze.getPreviousNodes(new Node(-1, 2)));
