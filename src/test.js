@@ -1,6 +1,19 @@
 // Generate maze V2
 
 import log from 'loglevel';
+import {
+  // Color,
+  // Group,
+  // Mesh,
+  // MeshBasicMaterial,
+  // PerspectiveCamera,
+  QuadraticBezierCurve3,
+  // Scene,
+  // SphereGeometry,
+  // TubeGeometry,
+  Vector3,
+  // WebGLRenderer,
+} from 'three';
 import Node from './Node.js';
 import Edge from './Edge.js';
 
@@ -8,6 +21,8 @@ log.setLevel('info', true);
 
 class Maze {
   #nodes;
+
+  #curve90;
 
   #edges;
 
@@ -22,6 +37,13 @@ class Maze {
       new Edge(this.#nodes[0], this.#nodes[1]),
       new Edge(this.#nodes[0], this.#nodes[2]),
     ];
+
+    this.#curve90 = new QuadraticBezierCurve3(
+      new Vector3(0, 0, 0),
+      new Vector3(1, 0, 0),
+      new Vector3(1, 2, 0),
+
+    );
   }
 
   // getNextUnoccupied = (fromNode) => {

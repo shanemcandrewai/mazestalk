@@ -12,10 +12,6 @@ import {
   WebGLRenderer,
 } from 'three';
 
-// let xx = [1, 2, 3, 4];
-// xx = xx.reduce((a, e, i) => { if (e > 2) a.push(i); return a; }, []);
-// console.log(xx);
-
 const scene = new Scene();
 scene.background = new Color(0xffffff);
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
