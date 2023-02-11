@@ -22,23 +22,23 @@ log.setLevel('info', true);
 class Maze {
   #nodes;
 
-  #curve90;
+  #tube;
 
   #edges;
 
-  constructor() {
-    this.#nodes = [
+  constructor(nodes, edges, tube) {
+    this.#nodes = nodes || [
       new Node(0, 0),
       new Node(-1, 2),
       new Node(1, 2),
     ];
 
-    this.#edges = [
+    this.#edges = edges || [
       new Edge(this.#nodes[0], this.#nodes[1]),
       new Edge(this.#nodes[0], this.#nodes[2]),
     ];
 
-    this.#curve90 = new QuadraticBezierCurve3(
+    this.#tube = tube || new QuadraticBezierCurve3(
       new Vector3(0, 0, 0),
       new Vector3(1, 0, 0),
       new Vector3(1, 2, 0),
