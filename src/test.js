@@ -22,9 +22,9 @@ log.setLevel('info', true);
 class Maze {
   #nodes;
 
-  #tube;
-
   #edges;
+
+  #tube;
 
   constructor(nodes, edges, tube) {
     this.#nodes = nodes || [
@@ -46,12 +46,15 @@ class Maze {
     );
   }
 
-  // getNextUnoccupied = (fromNode) => {
-  // const nextPoints = [];
-  // nextPoints.push(new Node(fromNode.x - 1, fromNode.y + 2));
-  // nextPoints.push(new Node(fromNode.x + 1, fromNode.y + 2));
-  // nextPoint.filter((point) =>
-  // };
+  getNextUnoccupied = (fromNode) => {
+    const nextPoints = [
+      new Node(fromNode.x - this.#tube.v2.x, fromNode.y + this.#tube.v2.y),
+      new Node(fromNode.x + this.#tube.v2.x, fromNode.y + this.#tube.v2.y)];
+    const nextNodes = this.getNextNodes(fromNode);
+    if (nextNodes.length === nextPoints.length) return [];
+    if (!nextNodes.length) return nextPoints;
+    return nextPoints.filter((point) => !nextNodes.some((node) => node.isSameLocation(point)));
+  };
 
   addNodeEdge = (fromNode, toNode) => {
     if (!this.#nodes.some((node) => fromNode.isSameLocation(node))) return -1;
@@ -77,7 +80,16 @@ class Maze {
 const maze = new Maze();
 
 log.info('maze.getNextNodes(new Node())', maze.getNextNodes(new Node()));
+log.info('maze.getNextNodes(new Node()).length === 2', maze.getNextNodes(new Node()).length === 2);
 log.info('maze.getPreviousNodes(new Node(-1, 2))', maze.getPreviousNodes(new Node(-1, 2)));
-log.info('toNode', maze.addNodeEdge(new Node(-1, 2), new Node(-2, 4)));
+log.info(
+  'maze.getPreviousNodes(new Node(-1, 2))[0].isSameLocation(new Node())',
+  maze.getPreviousNodes(new Node(-1, 2))[0].isSameLocation(new Node()),
+);
+log.info(
+  'maze.addNodeEdge(new Node(-1, 2), new Node(-2, 4)) === 3',
+  maze.addNodeEdge(new Node(-1, 2), new Node(-2, 4)) === 3,
+);
 log.info('maze.getNextNodes(new Node(-1, 2))', maze.getNextNodes(new Node(-1, 2)));
 log.info('maze.getNextNodes(new Node(1, 2))', maze.getNextNodes(new Node(1, 2)));
+log.info('maze.getNextUnoccupied(new Node(1, 2))', maze.getNextUnoccupied(new Node(1, 2)));
