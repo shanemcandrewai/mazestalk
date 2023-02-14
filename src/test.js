@@ -1,5 +1,9 @@
 // Generate maze V2
 
+// to do
+// create method getNextPoints, adjust getGrowProb
+// create method growNode iterating of getNextPoints
+
 import log from 'loglevel';
 import {
   // Color,
@@ -57,13 +61,14 @@ class Maze {
   };
 
   addNodeEdge = (fromNode, toNode) => {
-    if (!this.#nodes.some((node) => fromNode.isSameLocation(node))) return -1;
+    const fromInd = this.#nodes.findIndex((node) => fromNode.isSameLocation(node));
+    if (fromInd < 0) return -1;
     if (this.#edges.some((edge) => fromNode.isSameLocation(edge.fromNode)
                                 && toNode.isSameLocation(edge.toNode))) return -2;
-    let endInd = this.#nodes.findIndex((node) => toNode.isSameLocation(node));
-    if (endInd === -1) endInd = this.#nodes.push(toNode) - 1;
-    this.#edges.push(new Edge(fromNode, toNode));
-    return endInd;
+    let toInd = this.#nodes.findIndex((node) => toNode.isSameLocation(node));
+    if (toInd === -1) toInd = this.#nodes.push(toNode) - 1;
+    this.#edges.push(new Edge(this.#nodes[fromInd], this.#nodes[toInd]));
+    return toInd;
   };
 
   getNextNodes = (fromNode) => this.#edges.reduce((acc, edge) => {
@@ -76,7 +81,7 @@ class Maze {
     return acc;
   }, []);
 
-  getGrowChange = (fromNode, toPoint) => {
+  getGrowProb = (fromNode, toPoint) => {
     if (!this.#nodes.some((node) => fromNode.isSameLocation(node))) return 0;
     if (this.#nodes.some((node) => toPoint.isSameLocation(node))) return 0;
     if (this.#edges.some((edge) => fromNode.isSameLocation(edge.fromNode)
@@ -91,54 +96,54 @@ class Maze {
 const maze = new Maze();
 
 log.info(
-  'maze.getNextNodes(new Node()).length === 2;',
   maze.getNextNodes(new Node()).length === 2,
+  'maze.getNextNodes(new Node()).length === 2;',
 );
 log.info(
-  'maze.getNextNodes(new Node())[0].isSameLocation(new Node(-1, 2))',
   maze.getNextNodes(new Node())[0].isSameLocation(new Node(-1, 2)),
+  'maze.getNextNodes(new Node())[0].isSameLocation(new Node(-1, 2))',
 );
 log.info(
-  'maze.getPreviousNodes(new Node(-1, 2))[0].isSameLocation(new Node())',
   maze.getPreviousNodes(new Node(-1, 2))[0].isSameLocation(new Node()),
+  'maze.getPreviousNodes(new Node(-1, 2))[0].isSameLocation(new Node())',
 );
 log.info(
-  'maze.getPreviousNodes(new Node(1, 2))[0].isSameLocation(new Node())',
   maze.getPreviousNodes(new Node(1, 2))[0].isSameLocation(new Node()),
+  'maze.getPreviousNodes(new Node(1, 2))[0].isSameLocation(new Node())',
 );
 log.info(
-  'maze.addNodeEdge(new Node(-1, 2), new Node(-2, 4)) === 3',
   maze.addNodeEdge(new Node(-1, 2), new Node(-2, 4)) === 3,
+  'maze.addNodeEdge(new Node(-1, 2), new Node(-2, 4)) === 3',
 );
 log.info(
-  'maze.getNextNodes(new Node(-1, 2))[0].isSameLocation(new Node(-2, 4))',
   maze.getNextNodes(new Node(-1, 2))[0].isSameLocation(new Node(-2, 4)),
+  'maze.getNextNodes(new Node(-1, 2))[0].isSameLocation(new Node(-2, 4))',
 );
 log.info(
-  'maze.getNextNodes(new Node(1, 2)).length === 0',
   maze.getNextNodes(new Node(1, 2)).length === 0,
+  'maze.getNextNodes(new Node(1, 2)).length === 0',
 );
 log.info(
-  'maze.getNextUnoccupied(new Node(1, 2)).length === 2',
   maze.getNextUnoccupied(new Node(1, 2)).length === 2,
+  'maze.getNextUnoccupied(new Node(1, 2)).length === 2',
 );
 log.info(
-  'maze.getNextUnoccupied(new Node(-1, 2)).length === 1',
   maze.getNextUnoccupied(new Node(-1, 2)).length === 1,
+  'maze.getNextUnoccupied(new Node(-1, 2)).length === 1',
 );
 log.info(
-  'maze.getNextUnoccupied(new Node(-1, 2))[0].isSameLocation(new Node(0, 4))',
   maze.getNextUnoccupied(new Node(-1, 2))[0].isSameLocation(new Node(0, 4)),
+  'maze.getNextUnoccupied(new Node(-1, 2))[0].isSameLocation(new Node(0, 4))',
 );
 log.info(
-  'maze.getGrowChange(new Node(), new Node(-1, 2)) === 0',
-  maze.getGrowChange(new Node(), new Node(-1, 2)) === 0,
+  maze.getGrowProb(new Node(), new Node(-1, 2)) === 0,
+  'maze.getGrowProb(new Node(), new Node(-1, 2)) === 0',
 );
 log.info(
-  'maze.getGrowChange(new Node(), new Node(-1, 3)) === 0',
-  maze.getGrowChange(new Node(), new Node(-1, 3)) === 0,
+  maze.getGrowProb(new Node(), new Node(-1, 3)) === 0,
+  'maze.getGrowProb(new Node(), new Node(-1, 3)) === 0',
 );
 log.info(
-  'maze.getGrowChange(new Node(1, 2), new Node(2, 4)) === 1/3',
-  maze.getGrowChange(new Node(1, 2), new Node(2, 4)) === 1 / 3,
+  maze.getGrowProb(new Node(1, 2), new Node(2, 4)) === 1 / 3,
+  'maze.getGrowProb(new Node(1, 2), new Node(2, 4)) === 1 / 3',
 );
