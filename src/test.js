@@ -1,7 +1,6 @@
 // Generate maze V2
 
 // to do
-// create method getNextPoints, adjust getGrowProb
 // create method growNode iterating of getNextPoints
 
 import log from 'loglevel';
@@ -50,10 +49,12 @@ class Maze {
     );
   }
 
+  getNextPoints = (fromNode) => [
+    new Node(fromNode.x - this.#tube.v2.x, fromNode.y + this.#tube.v2.y),
+    new Node(fromNode.x + this.#tube.v2.x, fromNode.y + this.#tube.v2.y)];
+
   getNextUnoccupied = (fromNode) => {
-    const nextPoints = [
-      new Node(fromNode.x - this.#tube.v2.x, fromNode.y + this.#tube.v2.y),
-      new Node(fromNode.x + this.#tube.v2.x, fromNode.y + this.#tube.v2.y)];
+    const nextPoints = this.getNextPoints(fromNode);
     const nextNodes = this.getNextNodes(fromNode);
     if (nextNodes.length === nextPoints.length) return [];
     if (!nextNodes.length) return nextPoints;
@@ -126,6 +127,10 @@ log.info(
 log.info(
   maze.getNextUnoccupied(new Node(1, 2)).length === 2,
   'maze.getNextUnoccupied(new Node(1, 2)).length === 2',
+);
+log.info(
+  maze.getNextPoints(new Node(-1, 2)).length === 2,
+  'maze.getNextPoints(new Node(-1, 2)).length === 2',
 );
 log.info(
   maze.getNextUnoccupied(new Node(-1, 2)).length === 1,
