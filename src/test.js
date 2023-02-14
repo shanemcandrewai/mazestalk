@@ -95,11 +95,12 @@ class Maze {
 
   growNode = (fromNode) => {
     if (!this.#nodes.some((node) => fromNode.isSameLocation(node))) return -1;
-    maze.getNextUnoccupied(new Node(1, 2)).forEach((node) => {
+    return this.getNextUnoccupied(new Node(1, 2)).reduce((acc, node) => {
       if (Math.random() > this.getGrowProb(node)) {
         this.addNodeEdge(fromNode, node);
       }
-    });
+      return acc;
+    }, []);
   };
 }
 
