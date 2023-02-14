@@ -75,6 +75,17 @@ class Maze {
     if (edge.toNode.isSameLocation(toNode)) acc.push(edge.fromNode);
     return acc;
   }, []);
+
+  getGrowChange = (fromNode, toPoint) => {
+    if (!this.#nodes.some((node) => fromNode.isSameLocation(node))) return 0;
+    if (this.#nodes.some((node) => toPoint.isSameLocation(node))) return 0;
+    if (this.#edges.some((edge) => fromNode.isSameLocation(edge.fromNode)
+                                && toPoint.isSameLocation(edge.toNode))) return 0;
+    if (!this.getNextUnoccupied(fromNode, toPoint).some(
+      (node) => toPoint.isSameLocation(node),
+    )) return 0;
+    return 1 / (Math.abs(toPoint.x) + 1);
+  };
 }
 
 const maze = new Maze();
@@ -110,4 +121,24 @@ log.info(
 log.info(
   'maze.getNextUnoccupied(new Node(1, 2)).length === 2',
   maze.getNextUnoccupied(new Node(1, 2)).length === 2,
+);
+log.info(
+  'maze.getNextUnoccupied(new Node(-1, 2)).length === 1',
+  maze.getNextUnoccupied(new Node(-1, 2)).length === 1,
+);
+log.info(
+  'maze.getNextUnoccupied(new Node(-1, 2))[0].isSameLocation(new Node(0, 4))',
+  maze.getNextUnoccupied(new Node(-1, 2))[0].isSameLocation(new Node(0, 4)),
+);
+log.info(
+  'maze.getGrowChange(new Node(), new Node(-1, 2)) === 0',
+  maze.getGrowChange(new Node(), new Node(-1, 2)) === 0,
+);
+log.info(
+  'maze.getGrowChange(new Node(), new Node(-1, 3)) === 0',
+  maze.getGrowChange(new Node(), new Node(-1, 3)) === 0,
+);
+log.info(
+  'maze.getGrowChange(new Node(1, 2), new Node(2, 4)) === 1/3',
+  maze.getGrowChange(new Node(1, 2), new Node(2, 4)) === 1 / 3,
 );
