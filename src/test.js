@@ -79,17 +79,35 @@ class Maze {
 
 const maze = new Maze();
 
-log.info('maze.getNextNodes(new Node())', maze.getNextNodes(new Node()));
-log.info('maze.getNextNodes(new Node()).length === 2', maze.getNextNodes(new Node()).length === 2);
-log.info('maze.getPreviousNodes(new Node(-1, 2))', maze.getPreviousNodes(new Node(-1, 2)));
+log.info(
+  'maze.getNextNodes(new Node()).length === 2;',
+  maze.getNextNodes(new Node()).length === 2,
+);
+log.info(
+  'maze.getNextNodes(new Node())[0].isSameLocation(new Node(-1, 2))',
+  maze.getNextNodes(new Node())[0].isSameLocation(new Node(-1, 2)),
+);
 log.info(
   'maze.getPreviousNodes(new Node(-1, 2))[0].isSameLocation(new Node())',
   maze.getPreviousNodes(new Node(-1, 2))[0].isSameLocation(new Node()),
 );
 log.info(
+  'maze.getPreviousNodes(new Node(1, 2))[0].isSameLocation(new Node())',
+  maze.getPreviousNodes(new Node(1, 2))[0].isSameLocation(new Node()),
+);
+log.info(
   'maze.addNodeEdge(new Node(-1, 2), new Node(-2, 4)) === 3',
   maze.addNodeEdge(new Node(-1, 2), new Node(-2, 4)) === 3,
 );
-log.info('maze.getNextNodes(new Node(-1, 2))', maze.getNextNodes(new Node(-1, 2)));
-log.info('maze.getNextNodes(new Node(1, 2))', maze.getNextNodes(new Node(1, 2)));
-log.info('maze.getNextUnoccupied(new Node(1, 2))', maze.getNextUnoccupied(new Node(1, 2)));
+log.info(
+  'maze.getNextNodes(new Node(-1, 2))[0].isSameLocation(new Node(-2, 4))',
+  maze.getNextNodes(new Node(-1, 2))[0].isSameLocation(new Node(-2, 4)),
+);
+log.info(
+  'maze.getNextNodes(new Node(1, 2)).length === 0',
+  maze.getNextNodes(new Node(1, 2)).length === 0,
+);
+log.info(
+  'maze.getNextUnoccupied(new Node(1, 2)).length === 2',
+  maze.getNextUnoccupied(new Node(1, 2)).length === 2,
+);
