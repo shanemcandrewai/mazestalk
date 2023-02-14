@@ -1,7 +1,7 @@
 // Generate maze V2
 
 // to do
-// create method growNode iterating of getNextPoints
+// test attemptGrow* methods
 
 import log from 'loglevel';
 import {
@@ -93,15 +93,22 @@ class Maze {
     return 1 / (Math.abs(toPoint.x) + 1);
   };
 
-  growNode = (fromNode) => {
+  attemptGrow = (fromNode) => {
     if (!this.#nodes.some((node) => fromNode.isSameLocation(node))) return -1;
-    return this.getNextUnoccupied(new Node(1, 2)).reduce((acc, node) => {
-      if (Math.random() > this.getGrowProb(node)) {
-        this.addNodeEdge(fromNode, node);
+    return this.getNextUnoccupied(fromNode).reduce((acc, toNode) => {
+      if (Math.random() < this.getGrowProb(fromNode, toNode)) {
+        if (this.addNodeEdge(fromNode, toNode) > 0) acc.push(toNode);
       }
       return acc;
     }, []);
   };
+
+  attemptGrowAll = (startNode) => this.getNextNodes(
+    startNode,
+  ).reduce((acc, toNode) => this.attemptGrow(toNode).reduce((acc2, newNode) => {
+    acc2.push(this.attemptGrowAll(newNode));
+    return acc2;
+  }, []), []);
 }
 
 const maze = new Maze();
