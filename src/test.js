@@ -92,6 +92,15 @@ class Maze {
     )) return 0;
     return 1 / (Math.abs(toPoint.x) + 1);
   };
+
+  growNode = (fromNode) => {
+    if (!this.#nodes.some((node) => fromNode.isSameLocation(node))) return -1;
+    maze.getNextUnoccupied(new Node(1, 2)).forEach((node) => {
+      if (Math.random() > this.getGrowProb(node)) {
+        this.addNodeEdge(fromNode, node);
+      }
+    });
+  };
 }
 
 const maze = new Maze();
