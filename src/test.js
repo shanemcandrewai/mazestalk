@@ -1,6 +1,8 @@
 // Generate maze V2
 
 // to do
+// make rand a parameter of attemptGrow* methods
+// fix call to this.getNextUnoccupied(fromNode, toPoint)
 // test attemptGrow* methods
 
 import log from 'loglevel';
