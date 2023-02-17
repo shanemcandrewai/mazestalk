@@ -1,9 +1,7 @@
 // Generate maze V2
 
 // to do
-// make rand a parameter of attemptGrow* methods
-// fix call to this.getNextUnoccupied(fromNode, toPoint)
-// test attemptGrow* methods
+// fix getAllNextNodes
 
 import log from 'loglevel';
 import {
@@ -89,26 +87,33 @@ class Maze {
     if (this.#nodes.some((node) => toPoint.isSameLocation(node))) return 0;
     if (this.#edges.some((edge) => fromNode.isSameLocation(edge.fromNode)
                                 && toPoint.isSameLocation(edge.toNode))) return 0;
-    if (!this.getNextUnoccupied(fromNode, toPoint).some(
+    if (!this.getNextUnoccupied(fromNode).some(
       (node) => toPoint.isSameLocation(node),
     )) return 0;
     return 1 / (Math.abs(toPoint.x) + 1);
   };
 
-  attemptGrow = (fromNode) => {
+  tryGrow = (fromNode, rand) => {
     if (!this.#nodes.some((node) => fromNode.isSameLocation(node))) return -1;
     return this.getNextUnoccupied(fromNode).reduce((acc, toNode) => {
-      if (Math.random() < this.getGrowProb(fromNode, toNode)) {
+      if (rand < this.getGrowProb(fromNode, toNode)) {
         if (this.addNodeEdge(fromNode, toNode) > 0) acc.push(toNode);
       }
       return acc;
     }, []);
   };
 
-  attemptGrowAll = (startNode) => this.getNextNodes(
+  getAllNextNodes = (startNode) => this.getAllNextNodes(
     startNode,
-  ).reduce((acc, toNode) => this.attemptGrow(toNode).reduce((acc2, newNode) => {
-    acc2.push(this.attemptGrowAll(newNode));
+  ).reduce((acc, nextNode) => {
+    acc.push(nextNode);
+    return acc;
+  }, []);
+
+  tryGrowAll = (startNode, rand) => this.getNextNodes(
+    startNode,
+  ).reduce((acc, toNode) => this.tryGrow(toNode, rand).reduce((acc2, newNode) => {
+    acc2.push(this.tryGrowAll(newNode, rand));
     return acc2;
   }, []), []);
 }
@@ -170,4 +175,11 @@ log.info(
 log.info(
   maze.getGrowProb(new Node(1, 2), new Node(2, 4)) === 1 / 3,
   'maze.getGrowProb(new Node(1, 2), new Node(2, 4)) === 1 / 3',
+);
+log.info(
+  maze.tryGrow(new Node(1, 2), 0.2)[0].isSameLocation(new Node(0, 4)),
+  'maze.tryGrow(new Node(1, 2), 0.2)[0].isSameLocation(new Node(0, 4))',
+);
+log.info(
+  maze.getAllNextNodes(new Node(1, 2)),
 );
