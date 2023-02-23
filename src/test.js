@@ -1,7 +1,7 @@
 // Generate maze V2
 
 // to do
-// fix getAllNextNodes
+// tryGrow wip
 
 import log from 'loglevel';
 import {
@@ -103,10 +103,11 @@ class Maze {
     }, []);
   };
 
-  getAllNextNodes = (startNode) => this.getAllNextNodes(
+  getAllNextNodes = (startNode) => this.getNextNodes(
     startNode,
   ).reduce((acc, nextNode) => {
     acc.push(nextNode);
+    acc.push(...this.getAllNextNodes(nextNode));
     return acc;
   }, []);
 
@@ -177,9 +178,10 @@ log.info(
   'maze.getGrowProb(new Node(1, 2), new Node(2, 4)) === 1 / 3',
 );
 log.info(
-  maze.tryGrow(new Node(1, 2), 0.2)[0].isSameLocation(new Node(0, 4)),
-  'maze.tryGrow(new Node(1, 2), 0.2)[0].isSameLocation(new Node(0, 4))',
+  maze.getAllNextNodes(new Node(-1, 2))[0].isSameLocation(new Node(-2, 4)),
+  'maze.getAllNextNodes(new Node(-1, 2))[0].isSameLocation(new Node(-2, 4))',
 );
-log.info(
-  maze.getAllNextNodes(new Node(1, 2)),
-);
+// log.info(
+// maze.tryGrow(new Node(1, 2), 0.2)[0].isSameLocation(new Node(0, 4)),
+// 'maze.tryGrow(new Node(1, 2), 0.2)[0].isSameLocation(new Node(0, 4))',
+// );
